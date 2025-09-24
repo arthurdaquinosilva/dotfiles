@@ -1,0 +1,19 @@
+[core]
+	user = arthurdaquinosilva
+	email = arthurdaquinosilva@gmail.com
+	editor = vim
+	pager = git-split-diffs --color | less -RFX
+[color]
+	ui = auto
+	branch = auto
+	diff = auto
+	status = auto
+	log = auto
+[user]
+	name = arthurdaquinosilva
+	email = arthurdaquinosilva@gmail.com
+[init]
+	defaultBranch = main
+[split-diffs]
+	theme-directory = /Users/arthurdaquino/dotfiles/terminal/git-split-diffs
+	theme-name = minimal

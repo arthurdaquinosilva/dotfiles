@@ -1,0 +1,2 @@
+#!/bin/sh
+curl 'https://economia.awesomeapi.com.br/all/EUR-BRL' | json_pp

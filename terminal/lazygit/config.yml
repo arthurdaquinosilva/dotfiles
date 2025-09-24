@@ -1,0 +1,12 @@
+gui:
+  # Minimal theme using default terminal colors
+  theme:
+    lightTheme: false
+git:
+  paging:
+    colorArg: always
+keybinding:
+  universal:
+    quit: "q"
+os:
+  editPreset: "vim"
