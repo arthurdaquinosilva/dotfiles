@@ -1,0 +1,8 @@
+gui:
+  # Minimal theme using default terminal colors
+  theme: {}
+
+# Log settings
+logs:
+  timestamps: true
+  since: '60m'
