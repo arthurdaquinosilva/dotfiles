@@ -1,0 +1,18 @@
+[core]
+	user = Arthur D'Aquino
+	email = deaquinodev@gmail.com
+	editor = vim
+	pager = delta
+    # pager = git-split-diffs --color | less -RFX
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true  # use n and N to move between diff sections
+    dark = true      # or light = true, or omit for auto-detection
+    side-by-side = true
+    line-numbers = true
+[merge]
+    conflictstyle = zdiff3
+[user]
+	name = Arthur D'Aquino
+	email = deaquinodev@gmail.com
