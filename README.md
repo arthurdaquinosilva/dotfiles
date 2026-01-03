@@ -1,143 +1,122 @@
 # macOS Development Environment Setup
 
-Automated setup scripts for a complete macOS development environment on Mac Mini M4.
+Automated and opinionated setup scripts for a complete macOS development environment, tested on Apple Silicon (M-series chips).
+
+This repository contains all the configuration files and scripts to bootstrap a new macOS machine for development. The setup is designed to be interactive, modular, and easy to maintain.
 
 ## Quick Start
 
-1. **Install the environment:**
-   ```bash
-   ./setup_macos.sh
-   ```
+1.  **Clone the Repository:**
+    Clone this repository to your local machine, typically into `~/dotfiles`.
 
-2. **Test the cleanup script:**
-   ```bash
-   ./cleanup_macos.sh
-   ```
+    ```bash
+    git clone git@github.com:arthurdaquinosilva/dotfiles.git ~/dotfiles
+    cd ~/dotfiles
+    ```
+
+2.  **Run the Setup Script:**
+    Execute the main setup script. It will guide you through the process, ask for your details (name and email for Git/SSH), and install all the necessary tools and configurations.
+
+    ```bash
+    ./setup_macos.sh
+    ```
+
+3.  **Restart Your Terminal:**
+    After the script completes, quit and restart your terminal completely to ensure all new settings and shell configurations are loaded.
 
 ## What Gets Installed
 
-### System Monitoring Tools
-- `mactop` - macOS system monitor
-- `asitop` - Activity monitor for Apple Silicon
-- `htop` - Interactive process viewer
-- `btop` - Modern htop alternative
-- `glances` - System monitoring tool
+### Core Tools
+- **Homebrew:** The missing package manager for macOS (will be installed automatically).
+- **Oh My Zsh:** A framework for managing Zsh configuration, with the `zsh-autosuggestions` plugin.
+- **Git:** With a clean, consolidated configuration.
 
-### Development Tools
-- `ripgrep` (rg) - Fast text search
-- `the_silver_searcher` (ag) - Code search tool
-- `tree` - Directory tree viewer
-- `fzf` - Fuzzy finder with key bindings
-- `zoxide` - Smart directory jumper
-- `tmux` - Terminal multiplexer with custom config
-- `lazygit` - Git TUI
-- `lazydocker` - Docker TUI
+### System & File Utilities
+- **Monitoring:** `mactop`, `asitop`, `htop`, `btop`, `glances`
+- **File System:** `ripgrep` (rg), `the_silver_searcher` (ag), `tree`, `fzf`, `zoxide`, `bat`
 
-### Programming Languages
-- **Node.js** - Latest LTS via NVM
-- **Python** - Latest 3.12.x via pyenv
-- **Vim** - Homebrew version with plugins
-
-### Databases
-- **MySQL** - With root user (password: `root`)
-- **PostgreSQL** - With postgres user (password: `postgres`)
-
-### Shell Environment
-- **Oh My Zsh** - Enhanced shell with autosuggestions
-- **Custom .zshrc** - With all tool configurations
+### Development Environment
+- **Terminal:** `tmux` (with a custom configuration), `lazygit`, `lazydocker`
+- **Languages:** Node.js (via NVM), Python (via Pyenv), Go
+- **Editor:** Vim (from Homebrew) with a curated set of plugins.
+- **Databases:** MySQL and PostgreSQL (services started, default passwords set).
+- **GitHub:** `gh` (CLI) and `git-split-diffs`.
+- **Utilities:** `translate-shell`, `make`.
 
 ## File Structure
-
 ```
 dotfiles/
-├── setup_macos.sh          # Main installation script
-├── cleanup_macos.sh        # Complete removal script
-├── vim_with_node.sh        # Vim launcher with Node.js
-├── vim/                    # Vim configuration
-│   ├── .vimrc             # Main vim config
-│   └── ...                # Plugin configurations
-├── shell/macos/
-│   └── .zshrc             # Shell configuration
-├── terminal/
-│   ├── tmux/.tmux.conf    # Tmux configuration
-│   └── git/.gitconfig     # Git configuration
-└── README.md              # This file
+├── setup_macos.sh          # Main interactive installation script
+├── cleanup_macos.sh        # Uninstalls everything set up by the main script
+├── .gitignore
+├── bin/                    # Custom executable scripts for your $PATH
+│   ├── copy_history
+│   ├── cur
+│   ├── eur
+│   ├── git-foresta
+│   └── ...
+├── shell/
+│   └── macos/              # macOS-specific shell configuration
+│       ├── .zshrc          # Main Zsh entrypoint (loads modules)
+│       └── zsh_files/      # Modular Zsh configuration files
+│           ├── aliases.zsh
+│           ├── environment.zsh
+│           ├── functions.zsh
+│           └── tools.zsh
+└── terminal/
+    ├── bat/                # `bat` configuration
+    ├── git/                # `git` configuration
+    ├── git-split-diffs/    # `git-split-diffs` theme
+    ├── lazydocker/         # `lazydocker` configuration
+    ├── lazygit/            # `lazygit` configuration
+    └── tmux/               # `tmux` configuration
 ```
-
-## Usage
-
-### Installation
-Run the main setup script:
-```bash
-./setup_macos.sh
-```
-
-The script will:
-1. Install all Homebrew packages
-2. Create symbolic links to dotfiles
-3. Install Oh My Zsh with plugins
-4. Set up Node.js via NVM
-5. Set up Python via pyenv
-6. Configure databases with default users
-7. Install vim plugins
-8. Configure FZF key bindings
-9. Install tmux plugins
-
-### Testing/Cleanup
-To completely remove everything and test again:
-```bash
-./cleanup_macos.sh
-```
-
-This will remove all installed packages, configurations, and restore your system to its previous state.
-
-### Post-Installation
-
-After running the setup:
-
-1. **Restart your terminal** or run:
-   ```bash
-   source ~/.zshrc
-   ```
-
-2. **Test database connections:**
-   ```bash
-   mysql -u root -p          # password: root
-   psql -U postgres          # password: postgres
-   ```
-
-3. **Test development tools:**
-   ```bash
-   vim                       # Should load with all plugins
-   tmux                      # Custom configuration
-   node --version            # Node.js via NVM
-   python --version          # Python via pyenv
-   ```
 
 ## Key Features
 
-- **Safe installation** - Backs up existing configurations
-- **Complete cleanup** - Fully reversible for testing
-- **Homebrew integration** - Uses system package manager
-- **Custom configurations** - Pre-configured dotfiles
-- **Database setup** - Ready-to-use MySQL and PostgreSQL
-- **Modern tools** - Latest versions of all development tools
+- **Interactive Setup:** Prompts for user-specific details like name and email.
+- **Modular & Maintainable:** Configurations are broken down into logical files and directories.
+- **Data-Driven Symlinking:** Symlink management is centralized, making it easy to add new dotfiles.
+- **Safe Installation:** Automatically backs up any existing dotfiles before creating symlinks.
+- **Complete Cleanup:** A `cleanup_macos.sh` script is provided to fully reverse the setup process, ideal for testing.
+- **Ready-to-Use Environment:** Includes pre-configured settings for databases, shells, and development tools.
 
 ## Requirements
 
-- macOS (tested on Mac Mini M4)
-- Homebrew already installed
-- Internet connection for downloads
+- A fresh macOS installation (tested on Apple Silicon).
+- An internet connection for downloading packages and cloning repositories.
+
+## Post-Installation Checks
+
+After running the setup and restarting your terminal:
+
+1.  **Test Development Tools:**
+    ```bash
+    node --version      # Should show Node.js version
+    python --version    # Should show Python version from pyenv
+    go version          # Should show Go version
+    gh --version        # Should show GitHub CLI version
+    vim --version       # Should show Vim from Homebrew
+    ```
+
+2.  **Test SSH and Git:**
+    ```bash
+    ssh -T git@github.com # Should show a welcome message from GitHub
+    ```
+
+3.  **Test Database Connections:**
+    ```bash
+    mysql -u root -p      # (password is 'root')
+    psql -U postgres      # (password is 'postgres')
+    ```
 
 ## Troubleshooting
 
-If something goes wrong:
+If something goes wrong during the setup:
 
-1. **Check the logs** - Scripts provide detailed output
-2. **Run cleanup** - Use `./cleanup_macos.sh` to reset
-3. **Manual fixes** - Scripts are well-commented for manual steps
-4. **Database issues** - Restart services: `brew services restart mysql`
+1.  **Check the logs:** The script provides detailed output with status messages, warnings, and errors.
+2.  **Run the cleanup script:** To get back to a clean state, run `./cleanup_macos.sh`. This is the safest way to reset before trying again.
+3.  **Manual fixes:** The scripts are well-commented, so you can also run functions individually for manual debugging.
 
 ---
-
-Generated for Arthur Daquino's Mac Mini M4 setup.
+Generated for Arthur Daquino's Mac setup.
