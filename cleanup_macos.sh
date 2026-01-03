@@ -86,46 +86,31 @@ cleanup_homebrew_packages() {
 cleanup_symlinks() {
     log_info "Removing symbolic links..."
 
-    # List of symlinks to remove
-    symlinks=(
-        "$HOME/.vim"
-        "$HOME/.vimrc"
-        "$HOME/.zshrc"
-        "$HOME/.tmux.conf"
-        "$HOME/.gitconfig"
+    # Define symlinks to clean up (these are the targets in the home directory)
+    # This list mirrors the targets created by setup_macos.sh
+    declare -A symlinks_to_clean=(
+        ["$HOME/.zshrc"]=1
+        ["$HOME/.tmux.conf"]=1
+        ["$HOME/.gitconfig"]=1
+        ["$HOME/.config/lazygit/config.yml"]=1
+        ["$HOME/.config/lazydocker/config.yml"]=1
     )
 
-    for symlink in "${symlinks[@]}"; do
-        if [[ -L "$symlink" ]]; then
-            log_info "Removing symlink: $symlink"
-            rm "$symlink"
-        elif [[ -f "$symlink" ]] || [[ -d "$symlink" ]]; then
-            log_warning "Found non-symlink file/directory at $symlink, moving to backup"
-            mv "$symlink" "${symlink}.cleanup_backup"
+    for symlink_target in "${!symlinks_to_clean[@]}"; do
+        if [[ -L "$symlink_target" ]]; then # Check if it's a symlink
+            log_info "Removing symlink: $symlink_target"
+            rm "$symlink_target"
+        elif [[ -e "$symlink_target" ]]; then # If it exists but is not a symlink
+            log_warning "Found non-symlink file/directory at $symlink_target, skipping removal."
         fi
     done
 
-    # Restore any backups if they exist
-    backup_dirs=($HOME/.dotfiles_backup_*)
-    if [[ ${#backup_dirs[@]} -gt 0 ]] && [[ -d "${backup_dirs[0]}" ]] && [[ "${backup_dirs[0]}" != "$HOME/.dotfiles_backup_*" ]]; then
-        # Get the latest backup (last in sorted order)
-        latest_backup=""
-        for dir in "${backup_dirs[@]}"; do
-            if [[ -d "$dir" ]]; then
-                latest_backup="$dir"
-            fi
-        done
-
-        if [[ -n "$latest_backup" ]]; then
-            log_info "Restoring files from latest backup: $latest_backup"
-            for file in "$latest_backup"/*; do
-                if [[ -f "$file" ]]; then
-                    filename=$(basename "$file")
-                    cp "$file" "$HOME/$filename"
-                    log_info "Restored $filename"
-                fi
-            done
-        fi
+    # Handle the .vimrc symlink separately, as its source is not in the dotfiles repo
+    if [[ -L "$HOME/.vimrc" ]]; then
+        log_info "Removing symlink: $HOME/.vimrc"
+        rm "$HOME/.vimrc"
+    elif [[ -e "$HOME/.vimrc" ]]; then
+        log_warning "Found non-symlink file at $HOME/.vimrc, skipping removal."
     fi
 
     log_success "Symbolic links cleanup completed"
