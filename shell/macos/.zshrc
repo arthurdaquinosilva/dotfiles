@@ -12,8 +12,9 @@
 # 5. .zshrc.local    (Local secrets and overrides, sourced last)
 # ============================================================================
 
-# Get the directory of the current script to locate the other config files
-ZSH_CONFIG_DIR="$(dirname "$0")/zsh_files"
+# Get the directory of the current script to locate the other config files.
+# Using ${(%):-%x} is a robust zsh-specific way to get the sourced script's path.
+ZSH_CONFIG_DIR="$(dirname "${(%):-%x}")/zsh_files"
 
 # An array defines the precise order for sourcing configuration files
 zsh_files_to_source=(
