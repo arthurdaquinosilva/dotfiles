@@ -12,9 +12,9 @@
 # 5. .zshrc.local    (Local secrets and overrides, sourced last)
 # ============================================================================
 
-# Get the directory of the current script to locate the other config files.
-# Using ${(%):-%x} is a robust zsh-specific way to get the sourced script's path.
-ZSH_CONFIG_DIR="$(dirname "${(%):-%x}")/zsh_files"
+# Set the path to the zsh configuration directory directly.
+# This avoids issues with resolving symlinks.
+ZSH_CONFIG_DIR="$HOME/dotfiles/shell/macos/zsh_files"
 
 # An array defines the precise order for sourcing configuration files
 zsh_files_to_source=(
@@ -28,6 +28,8 @@ zsh_files_to_source=(
 for file in "${zsh_files_to_source[@]}"; do
     if [[ -r "$ZSH_CONFIG_DIR/$file" ]]; then
         source "$ZSH_CONFIG_DIR/$file"
+    else
+        echo "zsh config: could not read $ZSH_CONFIG_DIR/$file"
     fi
 done
 unset file
@@ -35,8 +37,8 @@ unset zsh_files_to_source
 
 # Source local secrets and overrides as the final step.
 # This allows local settings to override any defaults from the config files.
-if [[ -f "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
-    source "${ZDOTDIR:-$HOME}/.zshrc.local"
+if [[ -f "$HOME/.zshrc.local" ]]; then
+    source "$HOME/.zshrc.local"
 fi
 
 unset ZSH_CONFIG_DIR
