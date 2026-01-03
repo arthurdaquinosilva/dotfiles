@@ -1,2 +1,9 @@
 #!/bin/sh
+
+# Check for json_pp dependency
+if ! command -v json_pp >/dev/null 2>&1; then
+  echo "Error: json_pp not found. Please install it (e.g., 'brew install json_pp' or 'cpan JSON::PP')." >&2
+  exit 1
+fi
+
 curl 'https://economia.awesomeapi.com.br/all/EUR-BRL' | json_pp
