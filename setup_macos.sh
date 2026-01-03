@@ -32,6 +32,18 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# ============================================================================
+# CONFIGURABLE VARIABLES
+# ============================================================================
+# Define versions and repository URLs here for easy updates.
+
+PYTHON_VERSION="3.12.7"
+VIM_REPO_URL="git@github.com:arthurdaquinosilva/vim.git"
+
+# ============================================================================
+# HELPER FUNCTIONS
+# ============================================================================
+
 # Helper function to check if command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
@@ -47,12 +59,31 @@ wait_for_user() {
 # MAIN INSTALLATION FUNCTIONS
 # ============================================================================
 
+prompt_user_details() {
+    log_info "Please enter your details for Git and SSH configuration."
+    
+    echo -e "${YELLOW}Enter your full name (e.g., Arthur D'Aquino):${NC}"
+    read -r USER_FULL_NAME
+    
+    echo -e "${YELLOW}Enter your email address (e.g., arthurdaquinosilva@gmail.com):${NC}"
+    read -r USER_EMAIL
+
+    if [[ -z "$USER_FULL_NAME" ]] || [[ -z "$USER_EMAIL" ]]; then
+        log_error "User name and email cannot be empty."
+        exit 1
+    fi
+
+    export USER_FULL_NAME
+    export USER_EMAIL
+    log_success "User details captured."
+}
+
 install_homebrew() {
     log_info "Installing Homebrew..."
 
     # Install Homebrew
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
+    
     # Add Homebrew to PATH for this session
     eval "$(/opt/homebrew/bin/brew shellenv)"
 
@@ -61,30 +92,30 @@ install_homebrew() {
 
 install_homebrew_packages() {
     log_info "Installing Homebrew packages..."
-
+    
     # System monitoring tools
     brew install mactop asitop htop btop glances
-
+    
     # Search and file tools
     brew install ripgrep the_silver_searcher tree fzf zoxide bat
-
+    
     # Terminal and development tools
     brew install tmux lazygit lazydocker
-
+    
     # GitHub and utilities
     brew install gh translate-shell git-split-diffs
-
+    
     # Programming language managers and languages
     brew install nvm pyenv go
-
+    
     # Build tools (install make if not available)
     if ! command -v make >/dev/null 2>&1; then
         brew install make
     fi
-
+    
     # Databases
     brew install mysql postgresql@15
-
+    
     # Vim (override system version)
     brew install vim
 
@@ -102,7 +133,7 @@ setup_symlinks() {
     create_symlink() {
         local source="$1"
         local target="$2"
-
+        
         if [[ -e "$target" ]] || [[ -L "$target" ]]; then
             log_warning "Backing up existing $target to $backup_dir"
             mv "$target" "$backup_dir/"
@@ -134,10 +165,10 @@ install_oh_my_zsh() {
 
         # Install Oh My Zsh
         sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-
+        
         # Install zsh-autosuggestions plugin
         git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-
+        
         # Restore our custom zshrc symlink (Oh My Zsh overwrites it)
         if [[ -n "$CUSTOM_ZSHRC_TARGET" ]]; then
             log_info "Restoring custom .zshrc symlink"
@@ -165,7 +196,7 @@ setup_nvm_and_node() {
         cp "/opt/homebrew/opt/nvm/nvm.sh" "$HOME/.nvm/"
         cp "/opt/homebrew/opt/nvm/bash_completion" "$HOME/.nvm/" 2>/dev/null || true
     fi
-
+    
     # Source nvm for this session
     [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
 
@@ -198,11 +229,10 @@ setup_pyenv_and_python() {
     if command -v pyenv >/dev/null 2>&1; then
         eval "$(pyenv init -)"
 
-        # Install latest Python 3.12
-        PYTHON_VERSION="3.12.7"
+        # Install latest Python
         log_info "Installing Python $PYTHON_VERSION (this may take a few minutes)..."
-        pyenv install $PYTHON_VERSION --skip-existing
-        pyenv global $PYTHON_VERSION
+        pyenv install "$PYTHON_VERSION" --skip-existing
+        pyenv global "$PYTHON_VERSION"
 
         # Verify installation
         if python --version >/dev/null 2>&1; then
@@ -235,7 +265,7 @@ setup_vim_plugins() {
     # Install plugins (some may require Node.js)
     log_info "Installing vim plugins (some may show Node.js warnings)..."
     $VIM_PATH -c 'PlugInstall --sync' -c 'qa'
-
+    
     # Compile vim-hexokinase if it was installed
     if [[ -d "$HOME/.vim/plugged/vim-hexokinase" ]]; then
         log_info "Compiling vim-hexokinase..."
@@ -270,7 +300,7 @@ setup_tmux_plugins() {
 
     # Install tmux plugins
     ~/.tmux/plugins/tpm/bin/install_plugins
-
+    
     log_success "Tmux plugins installed"
 }
 
@@ -299,9 +329,8 @@ setup_github_ssh() {
     log_info "Setting up GitHub SSH keys..."
 
     # Always set/update git config first (regardless of SSH key status)
-    EMAIL="arthurdaquinosilva@gmail.com"
-    git config --global user.email "$EMAIL"
-    git config --global user.name "arthurdaquinosilva"
+    git config --global user.email "$USER_EMAIL"
+    git config --global user.name "$USER_FULL_NAME"
     log_info "Git config updated with your GitHub credentials"
 
     SSH_DIR="$HOME/.ssh"
@@ -321,8 +350,8 @@ setup_github_ssh() {
         log_info "rm $SSH_KEY $SSH_KEY.pub"
     else
         # Generate SSH key
-        log_info "Generating SSH key for $EMAIL..."
-        ssh-keygen -t ed25519 -C "$EMAIL" -f "$SSH_KEY" -N ""
+        log_info "Generating SSH key for $USER_EMAIL..."
+        ssh-keygen -t ed25519 -C "$USER_EMAIL" -f "$SSH_KEY" -N ""
         chmod 600 "$SSH_KEY"
         chmod 644 "$SSH_KEY.pub"
         log_success "SSH key generated successfully"
@@ -366,7 +395,7 @@ EOF
     if [[ "$OPEN_BROWSER" =~ ^[Yy]$ ]]; then
         open "https://github.com/settings/ssh/new"
     fi
-
+    
     # Wait for user to add key to GitHub
     echo -e "${YELLOW}Press Enter after adding the SSH key to GitHub...${NC}"
     read -r
@@ -405,7 +434,7 @@ setup_github_cli() {
     read -r
 
     gh auth login --git-protocol ssh --web
-
+    
     # Verify authentication
     if gh auth status >/dev/null 2>&1; then
         log_success "GitHub CLI authenticated successfully"
@@ -413,7 +442,7 @@ setup_github_cli() {
     else
         log_warning "GitHub CLI authentication may have failed"
     fi
-
+    
     log_success "GitHub CLI setup completed"
 }
 
@@ -439,21 +468,21 @@ clone_vim_repository() {
             mv "$VIM_DIR" "$VIM_DIR.backup_$(date +%Y%m%d_%H%M%S)"
 
             # Clone the repository
-            log_info "Cloning vim repository from git@github.com:arthurdaquinosilva/vim.git..."
-            git clone git@github.com:arthurdaquinosilva/vim.git "$VIM_DIR" || {
+            log_info "Cloning vim repository from $VIM_REPO_URL..."
+            git clone "$VIM_REPO_URL" "$VIM_DIR" || {
                 log_error "Failed to clone vim repository. Make sure your SSH key is set up correctly."
                 return 1
             }
         fi
     else
         # Clone the repository directly as .vim
-        log_info "Cloning vim repository from git@github.com:arthurdaquinosilva/vim.git..."
-        git clone git@github.com:arthurdaquinosilva/vim.git "$VIM_DIR" || {
+        log_info "Cloning vim repository from $VIM_REPO_URL..."
+        git clone "$VIM_REPO_URL" "$VIM_DIR" || {
             log_error "Failed to clone vim repository. Make sure your SSH key is set up correctly."
             return 1
         }
     fi
-
+    
     log_success "Vim repository cloned successfully to $VIM_DIR"
 }
 
@@ -472,7 +501,7 @@ configure_postgresql() {
 
     # Create postgres user and set password in a single operation
     log_info "Setting up postgres user..."
-
+    
     # Single command to create user with password (if not exists) and set password
     "$PSQL_PATH/psql" -U "$(whoami)" -d postgres -c "
         DO \$\$
@@ -491,7 +520,7 @@ configure_postgresql() {
     # Configure PostgreSQL to require password authentication
     log_info "Configuring PostgreSQL to enforce password authentication..."
     PG_HBA_CONF="$PG_DATA_DIR/pg_hba.conf"
-
+    
     if [[ -f "$PG_HBA_CONF" ]]; then
         # Backup original pg_hba.conf
         cp "$PG_HBA_CONF" "$PG_HBA_CONF.backup"
@@ -519,7 +548,7 @@ update_shell_profile() {
 
     # Don't try to source zsh config from bash script
     log_info "Shell configuration complete. Restart your terminal or run 'source ~/.zshrc'"
-
+    
     log_success "Shell profile updated"
 }
 
@@ -539,7 +568,7 @@ main() {
         # Ensure it's in PATH for this session
         eval "$(/opt/homebrew/bin/brew shellenv)" 2>/dev/null || true
     fi
-
+    
     # Check if we're in the dotfiles directory
     if [[ ! -f "setup_macos.sh" ]]; then
         log_error "Please run this script from the dotfiles directory"
@@ -548,6 +577,9 @@ main() {
 
     log_info "Starting installation process..."
     wait_for_user
+    
+    # Get user details early
+    prompt_user_details
 
     # Execute installation steps
     install_homebrew_packages
