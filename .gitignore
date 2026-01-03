@@ -1,0 +1,2 @@
+# Ignore local zshrc file containing secrets
+shell/macos/.zshrc.local
