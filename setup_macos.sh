@@ -128,6 +128,7 @@ setup_symlinks() {
     # Backup existing files if they exist
     backup_dir="$HOME/.dotfiles_backup_$(date +%Y%m%d_%H%M%S)"
     mkdir -p "$backup_dir"
+    log_info "Backups for any existing files will be placed in $backup_dir"
 
     # Function to safely create symlink
     create_symlink() {
@@ -135,20 +136,42 @@ setup_symlinks() {
         local target="$2"
         
         if [[ -e "$target" ]] || [[ -L "$target" ]]; then
-            log_warning "Backing up existing $target to $backup_dir"
+            log_warning "Backing up existing $target"
             mv "$target" "$backup_dir/"
         fi
 
+        # Ensure target directory exists
+        mkdir -p "$(dirname "$target")"
+
         ln -sf "$source" "$target"
-        log_success "Created symlink: $target -> $source"
+        log_success "Linked $target -> $source"
     }
 
-    # Create symlinks
-    create_symlink "$HOME/.vim/.vimrc" "$HOME/.vimrc"
-    create_symlink "$PWD/shell/macos/.zshrc" "$HOME/.zshrc"
-    create_symlink "$PWD/terminal/tmux/.tmux.conf" "$HOME/.tmux.conf"
-    create_symlink "$PWD/terminal/git/.gitconfig" "$HOME/.gitconfig"
+    # --- Symlink definitions ---
+    # An associative array to map source files in the dotfiles repo to their target location.
+    # Key = source file relative to the dotfiles repo root
+    # Value = target file in the home directory
+    declare -A symlinks=(
+        ["shell/macos/.zshrc"]="$HOME/.zshrc"
+        ["terminal/tmux/.tmux.conf"]="$HOME/.tmux.conf"
+        ["terminal/git/.gitconfig"]="$HOME/.gitconfig"
+        ["terminal/lazygit/config.yml"]="$HOME/.config/lazygit/config.yml"
+        ["terminal/lazydocker/config.yml"]="$HOME/.config/lazydocker/config.yml"
+    )
 
+    # Loop through the symlinks and create them
+    for source in "${!symlinks[@]}"; do
+        target="${symlinks[$source]}"
+        create_symlink "$PWD/$source" "$target"
+    done
+
+    # --- Special one-off symlinks ---
+    # This symlink depends on the vim repo being cloned separately.
+    if [[ -f "$HOME/.vim/.vimrc" ]]; then
+        create_symlink "$HOME/.vim/.vimrc" "$HOME/.vimrc"
+    else
+        log_warning "Could not find $HOME/.vim/.vimrc to create symlink."
+    fi
 
     log_success "Symbolic links created successfully"
 }
