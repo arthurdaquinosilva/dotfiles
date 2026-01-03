@@ -1,33 +1,41 @@
 # ============================================================================
 # ZSH CONFIGURATION (macOS)
 # ============================================================================
-# This zsh configuration is modular and sources files from the zsh_files/
-# directory. This makes it easier to manage and maintain.
+# This zsh configuration is modular. The sourcing order is critical for it to
+# function correctly.
 #
-# The order of sourcing is important:
-# 1. .zshrc.local   (secrets and local overrides)
-# 2. environment.zsh (environment variables and PATH)
-# 3. tools.zsh       (tool configurations like fzf, nvm, etc.)
-# 4. functions.zsh   (custom shell functions)
-# 5. aliases.zsh     (command aliases)
+# Sourcing Order:
+# 1. tools.zsh       (Oh My Zsh, FZF, NVM, etc.)
+# 2. environment.zsh (PATH and other environment variables)
+# 3. functions.zsh   (Custom shell functions)
+# 4. aliases.zsh     (Command aliases)
+# 5. .zshrc.local    (Local secrets and overrides, sourced last)
 # ============================================================================
 
-# Source local secrets and overrides if the file exists
+# Get the directory of the current script to locate the other config files
+ZSH_CONFIG_DIR="$(dirname "$0")/zsh_files"
+
+# An array defines the precise order for sourcing configuration files
+zsh_files_to_source=(
+    "tools.zsh"
+    "environment.zsh"
+    "functions.zsh"
+    "aliases.zsh"
+)
+
+# Loop through and source each configuration file in order
+for file in "${zsh_files_to_source[@]}"; do
+    if [[ -r "$ZSH_CONFIG_DIR/$file" ]]; then
+        source "$ZSH_CONFIG_DIR/$file"
+    fi
+done
+unset file
+unset zsh_files_to_source
+
+# Source local secrets and overrides as the final step.
+# This allows local settings to override any defaults from the config files.
 if [[ -f "${ZDOTDIR:-$HOME}/.zshrc.local" ]]; then
     source "${ZDOTDIR:-$HOME}/.zshrc.local"
-fi
-
-# Define the base directory for zsh configuration files
-ZSH_CONFIG_DIR="${ZDOTDIR:-$HOME}/shell/macos/zsh_files"
-
-# Source modular zsh files if they exist
-if [[ -d "$ZSH_CONFIG_DIR" ]]; then
-    for file in "$ZSH_CONFIG_DIR"/*.zsh; do
-        if [[ -r "$file" ]]; then
-            source "$file"
-        fi
-    done
-    unset file
 fi
 
 unset ZSH_CONFIG_DIR
