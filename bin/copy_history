@@ -1,29 +1,14 @@
 #!/usr/bin/env bash
 
+# Configuration
+COMMANDS_HISTORY_FILE="/Volumes/PortableSSD/programming/commands_history.txt"
+
 copy_history() {
-  local saved_commands=()
-  local found
+  # Create the directory if it doesn't exist
+  mkdir -p "$(dirname "$COMMANDS_HISTORY_FILE")"
 
-  if [[ -f /Volumes/PortableSSD/programming/commands_history.txt ]]; then
-    while IFS= read -r saved_command; do
-      saved_commands+=("$saved_command")
-    done < /Volumes/PortableSSD/programming/commands_history.txt
-  fi
-
-  while IFS= read -r item; do
-      found=false
-      for previous_item in "${saved_commands[@]}"; do
-          if [[ "$item" == "$previous_item" ]]; then
-              found=true
-              break
-          fi
-      done
-
-      if [[ "$found" == false ]]; then
-          echo "$item" >> /Volumes/PortableSSD/programming/commands_history.txt
-          saved_commands+=("$item")
-      fi
-  done < <(cut -d";" -f2 ~/.zsh_history)
-}
+  # Append new history entries to the file
+  # Filter out empty lines and ensure each entry is on a new line
+  cut -d";" -f2 ~/.zsh_history | grep -v '^[[:space:]]*
 
 copy_history
