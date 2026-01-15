@@ -42,3 +42,4 @@ if [[ -f "$HOME/.zshrc.local" ]]; then
 fi
 
 unset ZSH_CONFIG_DIR
+export PATH="$HOME/.dotnet/tools:$PATH"
