@@ -38,7 +38,7 @@ log_error() {
 # Define versions and repository URLs here for easy updates.
 
 PYTHON_VERSION="3.12.7"
-VIM_REPO_URL="git@github.com:arthurdaquinosilva/vim.git"
+VIM_REPO_URL="https://github.com/arthurdaquinosilva/vim.git"
 
 # ============================================================================
 # HELPER FUNCTIONS
@@ -147,26 +147,24 @@ setup_symlinks() {
         log_success "Linked $target -> $source"
     }
 
-    # --- Symlink definitions ---
-    # An associative array to map source files in the dotfiles repo to their target location.
-    # Key = source file relative to the dotfiles repo root
-    # Value = target file in the home directory
-    declare -A symlinks=(
-        ["shell/macos/.zshrc"]="$HOME/.zshrc"
-        ["terminal/tmux/.tmux.conf"]="$HOME/.tmux.conf"
-        ["terminal/git/.gitconfig"]="$HOME/.gitconfig"
-        ["terminal/lazygit/config.yml"]="$HOME/.config/lazygit/config.yml"
-        ["terminal/lazydocker/config.yml"]="$HOME/.config/lazydocker/config.yml"
+    # Use a standard array (Source, Target, Source, Target...)
+    # This works in all Bash versions.
+    local symlinks=(
+        "shell/macos/.zshrc"             "$HOME/.zshrc"
+        "terminal/tmux/.tmux.conf"       "$HOME/.tmux.conf"
+        "terminal/git/.gitconfig"        "$HOME/.gitconfig"
+        "terminal/lazygit/config.yml"    "$HOME/.config/lazygit/config.yml"
+        "terminal/lazydocker/config.yml" "$HOME/.config/lazydocker/config.yml"
     )
 
-    # Loop through the symlinks and create them
-    for source in "${!symlinks[@]}"; do
-        target="${symlinks[$source]}"
-        create_symlink "$PWD/$source" "$target"
+    # Loop through the array in steps of 2
+    for ((i=0; i<${#symlinks[@]}; i+=2)); do
+        source_rel="${symlinks[i]}"
+        target="${symlinks[i+1]}"
+        create_symlink "$PWD/$source_rel" "$target"
     done
 
     # --- Special one-off symlinks ---
-    # This symlink depends on the vim repo being cloned separately.
     if [[ -f "$HOME/.vim/.vimrc" ]]; then
         create_symlink "$HOME/.vim/.vimrc" "$HOME/.vimrc"
     else

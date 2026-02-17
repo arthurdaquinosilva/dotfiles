@@ -43,3 +43,24 @@ fi
 
 unset ZSH_CONFIG_DIR
 export PATH="$HOME/.dotnet/tools:$PATH"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/arthurdaquino/.docker/completions $fpath)
+autoload -Uz compinit
+compinit
+# End of Docker CLI completions
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+export JAVA_HOME="$HOME/.sdkman/candidates/java/current"
+export PATH="$JAVA_HOME/bin:$PATH"
+
+# bun completions
+[ -s "/Users/arthurdaquino/.bun/_bun" ] && source "/Users/arthurdaquino/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

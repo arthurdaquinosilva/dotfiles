@@ -27,10 +27,6 @@ export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.tmux/plugins/t-smart-tmux-session-manager/bin:$PATH"
 export PATH="$HOME/.config/tmux/plugins/t-smart-tmux-session-manager/bin:$PATH"
 
-# Java
-export JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home
-export JDK_HOME="$JAVA_HOME"
-export PATH="$JAVA_HOME/bin:$PATH"
 
 # MySQL
 export PATH="/opt/homebrew/opt/mysql@8.0/bin:$PATH"
@@ -48,4 +44,3 @@ fi
 
 # Additional PATH entries
 export PATH="/Library/TeX/texbin:$PATH"
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
