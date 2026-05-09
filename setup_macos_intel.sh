@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # ============================================================================
-# macOS Development Environment Setup Script
+# macOS Development Environment Setup Script (Intel x86_64)
 # ============================================================================
 # Sets up a complete development environment on a new macOS computer
+# Targeted at Intel (x86_64) Macs — Homebrew prefix is /usr/local
 # ============================================================================
 
 set -e  # Exit on any error
@@ -90,10 +91,10 @@ wait_for_brew_lock() {
 
 prompt_user_details() {
     log_info "Please enter your details for Git and SSH configuration."
-    
+
     echo -e "${YELLOW}Enter your full name (e.g., Arthur D'Aquino):${NC}"
     read -r USER_FULL_NAME
-    
+
     echo -e "${YELLOW}Enter your email address (e.g., arthurdaquinosilva@gmail.com):${NC}"
     read -r USER_EMAIL
 
@@ -112,9 +113,9 @@ install_homebrew() {
 
     # Install Homebrew
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    
-    # Add Homebrew to PATH for this session
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+
+    # Add Homebrew to PATH for this session (Intel prefix: /usr/local)
+    eval "$(/usr/local/bin/brew shellenv)"
 
     log_success "Homebrew installed successfully"
 }
@@ -123,29 +124,34 @@ install_homebrew_packages() {
     log_info "Installing Homebrew packages..."
     wait_for_brew_lock
 
-    # System monitoring tools
-    brew install mactop asitop htop btop glances
-    
+    # Clear stale API source cache and update before installing
+    log_info "Updating Homebrew and clearing stale cache..."
+    brew cleanup --prune=all 2>/dev/null || true
+    brew update --force
+
+    # System monitoring tools (mactop and asitop are Apple Silicon only — omitted)
+    brew install htop btop glances
+
     # Search and file tools
     brew install ripgrep the_silver_searcher tree fzf zoxide bat
-    
+
     # Terminal and development tools
     brew install tmux lazygit lazydocker
-    
+
     # GitHub and utilities
     brew install gh translate-shell git-split-diffs
-    
+
     # Programming language managers and languages
     brew install nvm pyenv go
-    
+
     # Build tools (install make if not available)
     if ! command -v make >/dev/null 2>&1; then
         brew install make
     fi
-    
+
     # Databases
     brew install mysql postgresql@15
-    
+
     # Vim (override system version)
     brew install vim
 
@@ -164,7 +170,7 @@ setup_symlinks() {
     create_symlink() {
         local source="$1"
         local target="$2"
-        
+
         if [[ -e "$target" ]] || [[ -L "$target" ]]; then
             log_warning "Backing up existing $target"
             mv "$target" "$backup_dir/"
@@ -216,10 +222,10 @@ install_oh_my_zsh() {
 
         # Install Oh My Zsh
         sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-        
+
         # Install zsh-autosuggestions plugin
         git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-        
+
         # Restore our custom zshrc symlink (Oh My Zsh overwrites it)
         if [[ -n "$CUSTOM_ZSHRC_TARGET" ]]; then
             log_info "Restoring custom .zshrc symlink"
@@ -243,11 +249,12 @@ setup_nvm_and_node() {
     export NVM_DIR="$HOME/.nvm"
 
     # Copy nvm script to the .nvm directory (homebrew installs it elsewhere)
-    if [[ -s "/opt/homebrew/opt/nvm/nvm.sh" ]]; then
-        cp "/opt/homebrew/opt/nvm/nvm.sh" "$HOME/.nvm/"
-        cp "/opt/homebrew/opt/nvm/bash_completion" "$HOME/.nvm/" 2>/dev/null || true
+    # Intel Macs: Homebrew prefix is /usr/local
+    if [[ -s "/usr/local/opt/nvm/nvm.sh" ]]; then
+        cp "/usr/local/opt/nvm/nvm.sh" "$HOME/.nvm/"
+        cp "/usr/local/opt/nvm/bash_completion" "$HOME/.nvm/" 2>/dev/null || true
     fi
-    
+
     # Source nvm for this session
     [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
 
@@ -300,8 +307,8 @@ setup_pyenv_and_python() {
 setup_vim_plugins() {
     log_info "Setting up Vim plugins..."
 
-    # Use the homebrew vim
-    VIM_PATH="/opt/homebrew/bin/vim"
+    # Use the homebrew vim (Intel prefix: /usr/local)
+    VIM_PATH="/usr/local/bin/vim"
 
     # Install vim-plug if not already installed
     if [[ ! -f "$HOME/.vim/autoload/plug.vim" ]]; then
@@ -316,7 +323,7 @@ setup_vim_plugins() {
     # Install plugins (some may require Node.js)
     log_info "Installing vim plugins (some may show Node.js warnings)..."
     $VIM_PATH -c 'PlugInstall --sync' -c 'qa'
-    
+
     # Compile vim-hexokinase if it was installed
     if [[ -d "$HOME/.vim/plugged/vim-hexokinase" ]]; then
         log_info "Compiling vim-hexokinase..."
@@ -335,8 +342,8 @@ setup_vim_plugins() {
 configure_fzf() {
     log_info "Configuring FZF key bindings..."
 
-    # Install FZF key bindings and fuzzy completion
-    /opt/homebrew/opt/fzf/install --all --no-bash --no-fish
+    # Install FZF key bindings and fuzzy completion (Intel prefix: /usr/local)
+    /usr/local/opt/fzf/install --all --no-bash --no-fish
 
     log_success "FZF configured with key bindings"
 }
@@ -351,7 +358,7 @@ setup_tmux_plugins() {
 
     # Install tmux plugins
     ~/.tmux/plugins/tpm/bin/install_plugins
-    
+
     log_success "Tmux plugins installed"
 }
 
@@ -446,7 +453,7 @@ EOF
     if [[ "$OPEN_BROWSER" =~ ^[Yy]$ ]]; then
         open "https://github.com/settings/ssh/new"
     fi
-    
+
     # Wait for user to add key to GitHub
     echo -e "${YELLOW}Press Enter after adding the SSH key to GitHub...${NC}"
     read -r
@@ -485,7 +492,7 @@ setup_github_cli() {
     read -r
 
     gh auth login --git-protocol ssh --web
-    
+
     # Verify authentication
     if gh auth status >/dev/null 2>&1; then
         log_success "GitHub CLI authenticated successfully"
@@ -493,7 +500,7 @@ setup_github_cli() {
     else
         log_warning "GitHub CLI authentication may have failed"
     fi
-    
+
     log_success "GitHub CLI setup completed"
 }
 
@@ -533,7 +540,7 @@ clone_vim_repository() {
             return 1
         }
     fi
-    
+
     log_success "Vim repository cloned successfully to $VIM_DIR"
 }
 
@@ -546,13 +553,13 @@ configure_postgresql() {
     # Wait a moment for PostgreSQL to start
     sleep 5
 
-    # Use full path to PostgreSQL binaries
-    PSQL_PATH="/opt/homebrew/opt/postgresql@15/bin"
-    PG_DATA_DIR="/opt/homebrew/var/postgresql@15"
+    # Use full path to PostgreSQL binaries (Intel prefix: /usr/local)
+    PSQL_PATH="/usr/local/opt/postgresql@15/bin"
+    PG_DATA_DIR="/usr/local/var/postgresql@15"
 
     # Create postgres user and set password in a single operation
     log_info "Setting up postgres user..."
-    
+
     # Single command to create user with password (if not exists) and set password
     "$PSQL_PATH/psql" -U "$(whoami)" -d postgres -c "
         DO \$\$
@@ -571,7 +578,7 @@ configure_postgresql() {
     # Configure PostgreSQL to require password authentication
     log_info "Configuring PostgreSQL to enforce password authentication..."
     PG_HBA_CONF="$PG_DATA_DIR/pg_hba.conf"
-    
+
     if [[ -f "$PG_HBA_CONF" ]]; then
         # Backup original pg_hba.conf
         cp "$PG_HBA_CONF" "$PG_HBA_CONF.backup"
@@ -599,7 +606,7 @@ update_shell_profile() {
 
     # Don't try to source zsh config from bash script
     log_info "Shell configuration complete. Restart your terminal or run 'source ~/.zshrc'"
-    
+
     log_success "Shell profile updated"
 }
 
@@ -608,7 +615,7 @@ update_shell_profile() {
 # ============================================================================
 
 main() {
-    log_info "Starting macOS development environment setup..."
+    log_info "Starting macOS development environment setup (Intel x86_64)..."
     log_info "This script will install and configure your development tools"
 
     # Install Homebrew if not present
@@ -616,19 +623,19 @@ main() {
         install_homebrew
     else
         log_info "Homebrew already installed"
-        # Ensure it's in PATH for this session
-        eval "$(/opt/homebrew/bin/brew shellenv)" 2>/dev/null || true
+        # Ensure it's in PATH for this session (Intel prefix: /usr/local)
+        eval "$(/usr/local/bin/brew shellenv)" 2>/dev/null || true
     fi
-    
+
     # Check if we're in the dotfiles directory
-    if [[ ! -f "setup_macos.sh" ]]; then
+    if [[ ! -f "setup_macos_intel.sh" ]]; then
         log_error "Please run this script from the dotfiles directory"
         exit 1
     fi
 
     log_info "Starting installation process..."
     wait_for_user
-    
+
     # Get user details early
     prompt_user_details
 
@@ -649,7 +656,7 @@ main() {
     update_shell_profile
 
     log_success "============================================================================"
-    log_success "🎉 Setup completed successfully!"
+    log_success "Setup completed successfully!"
     log_success "============================================================================"
     log_warning "IMPORTANT: You MUST restart your terminal completely for everything to work!"
     log_info ""
