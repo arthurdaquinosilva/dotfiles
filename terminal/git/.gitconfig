@@ -20,5 +20,7 @@
     conflictstyle = zdiff3
 
 [split-diffs]
-	theme-directory = /Users/arthurdaquino/dotfiles/terminal/git-split-diffs
 	theme-name = minimal
+
+[include]
+	path = ~/.gitconfig.local

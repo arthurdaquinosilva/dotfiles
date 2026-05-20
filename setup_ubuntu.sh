@@ -392,6 +392,18 @@ setup_symlinks() {
         log_warning "Could not find $HOME/.vim/.vimrc to create symlink."
     fi
 
+    # Write machine-specific gitconfig (theme-directory uses absolute path)
+    GITCONFIG_LOCAL="$HOME/.gitconfig.local"
+    if [[ ! -f "$GITCONFIG_LOCAL" ]]; then
+        cat > "$GITCONFIG_LOCAL" << EOF
+[split-diffs]
+	theme-directory = $HOME/dotfiles/terminal/git-split-diffs
+EOF
+        log_success "Created $GITCONFIG_LOCAL with split-diffs theme-directory"
+    else
+        log_info "$GITCONFIG_LOCAL already exists — skipping"
+    fi
+
     log_success "Symbolic links created successfully"
 }
 
@@ -405,9 +417,6 @@ install_oh_my_zsh() {
 
         sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
-        git clone https://github.com/zsh-users/zsh-autosuggestions \
-            "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
-
         # Restore our custom .zshrc symlink (Oh My Zsh overwrites it)
         if [[ -n "$CUSTOM_ZSHRC_TARGET" ]]; then
             log_info "Restoring custom .zshrc symlink"
@@ -415,9 +424,19 @@ install_oh_my_zsh() {
             ln -sf "$CUSTOM_ZSHRC_TARGET" "$HOME/.zshrc"
         fi
 
-        log_success "Oh My Zsh installed with autosuggestions plugin"
+        log_success "Oh My Zsh installed"
     else
         log_warning "Oh My Zsh already installed"
+    fi
+
+    # Install zsh-autosuggestions regardless of whether OMZ was just installed
+    ZSH_CUSTOM_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+    if [[ ! -d "$ZSH_CUSTOM_DIR/plugins/zsh-autosuggestions" ]]; then
+        git clone https://github.com/zsh-users/zsh-autosuggestions \
+            "$ZSH_CUSTOM_DIR/plugins/zsh-autosuggestions"
+        log_success "zsh-autosuggestions plugin installed"
+    else
+        log_info "zsh-autosuggestions already installed"
     fi
 }
 
@@ -431,7 +450,7 @@ setup_nvm_and_node() {
 
     [ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
 
-    if command -v nvm >/dev/null 2>&1; then
+    if type nvm &>/dev/null; then
         nvm install --lts
         nvm use --lts
         nvm alias default lts/*

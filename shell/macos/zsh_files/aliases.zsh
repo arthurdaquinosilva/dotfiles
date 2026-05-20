@@ -59,7 +59,9 @@ tstp() {
 alias ts='tmuxinator-fzf-start.sh'
 alias tmux='tmux -u'
 alias goto='xdg-open'
-alias vim='/opt/homebrew/bin/vim'
+if [[ -f "/opt/homebrew/bin/vim" ]]; then
+    alias vim='/opt/homebrew/bin/vim'
+fi
 alias mke="make -f ~/Makefile.personal"
 alias gfr='git-foresta'
 alias gptb="tgpt --provider blackboxai"
