@@ -214,7 +214,7 @@ install_claude() {
         return 0
     fi
 
-    curl -fsSL "$CLAUDE_INSTALL_URL" | sh
+    curl -fsSL "$CLAUDE_INSTALL_URL" | bash
 
     export PATH="$HOME/.local/bin:$PATH"
 
