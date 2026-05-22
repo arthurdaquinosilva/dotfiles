@@ -39,6 +39,7 @@ log_error() {
 
 PYTHON_VERSION="3.12.7"
 VIM_REPO_URL="https://github.com/arthurdaquinosilva/vim.git"
+CLAUDE_INSTALL_URL="https://claude.ai/install.sh"
 
 # ============================================================================
 # HELPER FUNCTIONS
@@ -208,28 +209,32 @@ install_oh_my_zsh() {
     log_info "Installing Oh My Zsh..."
 
     if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
-        # Backup our custom zshrc if it exists
         if [[ -L "$HOME/.zshrc" ]]; then
             CUSTOM_ZSHRC_TARGET=$(readlink "$HOME/.zshrc")
             log_info "Backing up custom .zshrc symlink target: $CUSTOM_ZSHRC_TARGET"
         fi
 
-        # Install Oh My Zsh
         sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-        
-        # Install zsh-autosuggestions plugin
-        git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-        
-        # Restore our custom zshrc symlink (Oh My Zsh overwrites it)
+
         if [[ -n "$CUSTOM_ZSHRC_TARGET" ]]; then
             log_info "Restoring custom .zshrc symlink"
             rm "$HOME/.zshrc"
             ln -sf "$CUSTOM_ZSHRC_TARGET" "$HOME/.zshrc"
         fi
 
-        log_success "Oh My Zsh installed with autosuggestions plugin"
+        log_success "Oh My Zsh installed"
     else
         log_warning "Oh My Zsh already installed"
+    fi
+
+    # Install zsh-autosuggestions regardless of whether OMZ was just installed
+    ZSH_CUSTOM_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+    if [[ ! -d "$ZSH_CUSTOM_DIR/plugins/zsh-autosuggestions" ]]; then
+        git clone https://github.com/zsh-users/zsh-autosuggestions \
+            "$ZSH_CUSTOM_DIR/plugins/zsh-autosuggestions"
+        log_success "zsh-autosuggestions plugin installed"
+    else
+        log_info "zsh-autosuggestions already installed"
     fi
 }
 
@@ -259,10 +264,8 @@ setup_nvm_and_node() {
 
         # Install global npm packages
         npm install -g yarn
-        npm install -g @anthropic-ai/claude-code
 
         log_success "Node.js $(node --version), Yarn $(yarn --version) installed via NVM"
-        log_success "Claude Code installed globally via npm"
     else
         log_error "NVM installation failed"
         return 1
@@ -497,6 +500,42 @@ setup_github_cli() {
     log_success "GitHub CLI setup completed"
 }
 
+install_claude() {
+    log_info "Installing Claude Code..."
+
+    if command_exists claude; then
+        log_info "Claude Code already installed"
+        return 0
+    fi
+
+    curl -fsSL "$CLAUDE_INSTALL_URL" | sh
+
+    export PATH="$HOME/.local/bin:$PATH"
+
+    if command_exists claude; then
+        log_success "Claude Code installed successfully"
+    else
+        log_warning "Claude Code installed but not found in PATH yet — will be available after terminal restart"
+    fi
+}
+
+setup_claude_auth() {
+    log_info "Authenticating Claude Code..."
+
+    if ! command_exists claude; then
+        log_warning "Claude Code not found in PATH — skipping auth (authenticate manually by running: claude)"
+        return 0
+    fi
+
+    log_info "Claude Code requires a one-time browser login."
+    log_info "Open a new terminal tab, run 'claude', and complete the authentication in your browser."
+    log_info "Once done, return here and press Enter to continue the setup."
+    echo -e "${YELLOW}Press Enter once you have completed Claude authentication...${NC}"
+    read -r
+
+    log_success "Claude Code authentication step complete"
+}
+
 clone_vim_repository() {
     log_info "Cloning vim configuration repository..."
 
@@ -634,8 +673,10 @@ main() {
 
     # Execute installation steps
     install_homebrew_packages
+    install_claude
     setup_github_ssh
     setup_github_cli
+    setup_claude_auth
     clone_vim_repository
     setup_symlinks
     install_oh_my_zsh
@@ -667,6 +708,7 @@ main() {
     log_info "11. psql -U postgres                  # PostgreSQL (password: postgres)"
     log_info "12. vim                               # Should work with all plugins"
     log_info "13. tmux                              # Custom tmux configuration"
+    log_info "14. claude --version                  # Claude Code CLI"
     log_info ""
     log_warning "If any command doesn't work after restart, run: source ~/.zshrc"
     log_success "============================================================================"

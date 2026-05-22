@@ -40,6 +40,7 @@ PYTHON_VERSION="3.12.7"
 GO_VERSION="1.22.2"
 NVM_VERSION="0.39.7"
 VIM_REPO_URL="https://github.com/arthurdaquinosilva/vim.git"
+CLAUDE_INSTALL_URL="https://claude.ai/install.sh"
 
 # ============================================================================
 # HELPER FUNCTIONS
@@ -203,6 +204,42 @@ install_translate_shell() {
     sudo mv /tmp/trans /usr/local/bin/
 
     log_success "Translate Shell installed successfully"
+}
+
+install_claude() {
+    log_info "Installing Claude Code..."
+
+    if command_exists claude; then
+        log_info "Claude Code already installed"
+        return 0
+    fi
+
+    curl -fsSL "$CLAUDE_INSTALL_URL" | sh
+
+    export PATH="$HOME/.local/bin:$PATH"
+
+    if command_exists claude; then
+        log_success "Claude Code installed successfully"
+    else
+        log_warning "Claude Code installed but not found in PATH yet — will be available after terminal restart"
+    fi
+}
+
+setup_claude_auth() {
+    log_info "Authenticating Claude Code..."
+
+    if ! command_exists claude; then
+        log_warning "Claude Code not found in PATH — skipping auth (authenticate manually by running: claude)"
+        return 0
+    fi
+
+    log_info "Claude Code requires a one-time browser login."
+    log_info "Open a new terminal tab, run 'claude', and complete the authentication in your browser."
+    log_info "Once done, return here and press Enter to continue the setup."
+    echo -e "${YELLOW}Press Enter once you have completed Claude authentication...${NC}"
+    read -r
+
+    log_success "Claude Code authentication step complete"
 }
 
 install_go() {
@@ -457,10 +494,8 @@ setup_nvm_and_node() {
 
         npm install -g yarn
         npm install -g git-split-diffs
-        npm install -g @anthropic-ai/claude-code
 
-        log_success "Node.js $(node --version), Yarn $(yarn --version) installed via NVM"
-        log_success "Claude Code installed globally via npm"
+        log_success "Node.js $(node --version), Yarn $(yarn --version), git-split-diffs installed via NVM"
     else
         log_error "NVM installation failed"
         return 1
@@ -625,9 +660,11 @@ main() {
     install_lazygit
     install_lazydocker
     install_translate_shell
+    install_claude
     install_go
     setup_github_ssh
     setup_github_cli
+    setup_claude_auth
     clone_vim_repository
     setup_symlinks
     install_oh_my_zsh
@@ -658,6 +695,7 @@ main() {
     log_info "11. psql -U postgres                  # PostgreSQL (password: postgres)"
     log_info "12. vim                               # Should work with all plugins"
     log_info "13. tmux                              # Custom tmux configuration"
+    log_info "14. claude --version                  # Claude Code CLI"
     log_info ""
     log_warning "If any command doesn't work after restart, run: source ~/.zshrc"
     log_success "============================================================================"
