@@ -1,5 +1,8 @@
 # Minimal bat configuration using default colors
 
+# Syntax highlighting theme
+--theme="retrowave"
+
 # Show line numbers and Git modifications
 --style="numbers,changes"
 
