@@ -1,7 +1,27 @@
 gui:
-  # Minimal theme using default terminal colors
   theme:
     lightTheme: false
+    activeBorderColor:
+      - '#cc6af4'
+      - bold
+    inactiveBorderColor:
+      - '#6b5a8e'
+    optionsTextColor:
+      - '#7b2fff'
+    selectedLineBgColor:
+      - '#1e0f4a'
+    selectedRangeBgColor:
+      - '#1e0f4a'
+    cherryPickedCommitBgColor:
+      - '#3d2fd4'
+    cherryPickedCommitFgColor:
+      - '#cc6af4'
+    unstagedChangesColor:
+      - '#e8607a'
+    defaultFgColor:
+      - '#e8e8f0'
+    searchingActiveBorderColor:
+      - '#f4b46a'
 git:
   paging:
     colorArg: always

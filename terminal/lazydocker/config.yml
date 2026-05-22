@@ -1,6 +1,16 @@
 gui:
-  # Minimal theme using default terminal colors
-  theme: {}
+  theme:
+    activeBorderColor:
+      - '#cc6af4'
+      - bold
+    inactiveBorderColor:
+      - '#6b5a8e'
+    optionsTextColor:
+      - '#7b2fff'
+    selectedLineBgColor:
+      - '#1e0f4a'
+    selectedRangeBgColor:
+      - '#1e0f4a'
 
 # Log settings
 logs:

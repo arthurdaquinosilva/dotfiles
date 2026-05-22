@@ -12,7 +12,7 @@
 # Only load Oh My Zsh if it exists
 if [[ -d "$HOME/.oh-my-zsh" ]]; then
     export ZSH="$HOME/.oh-my-zsh"
-    ZSH_THEME="robbyrussell"
+    ZSH_THEME="retrowave"
 
     # Plugins (keep minimal for performance) - only load if they exist
     plugins=(git)
@@ -109,9 +109,10 @@ if command -v fzf >/dev/null 2>&1; then
         --pointer='→'
         --marker='*'
         --tiebreak=index
-        --color=bg+:-1,fg+:white:bold,hl+:red:bold
-        --color=info:cyan,prompt:cyan,pointer:cyan
-        --color=marker:yellow,spinner:cyan,header:dim
+        --color=bg:-1,bg+:-1,fg:#e8e8f0,fg+:#e8e8f0:bold
+        --color=hl:#e8607a:bold,hl+:#e8607a:bold
+        --color=border:#3d2fd4,info:#a89bc2,prompt:#00e5ff
+        --color=pointer:#cc6af4,marker:#f4b46a,spinner:#00e5ff,header:#6b5a8e
     "
 
     # Simple file preview
