@@ -1,0 +1,6 @@
+.git
+.gitignore
+*.md
+shell/macos/.bashrc
+shell/secrets.example
+docker/

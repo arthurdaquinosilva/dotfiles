@@ -1,0 +1,62 @@
+services:
+
+  dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: devenv:latest
+    container_name: devenv
+    hostname: devenv
+    stdin_open: true
+    tty: true
+    volumes:
+      - workspace:/workspace
+      # Mount your local secrets — create ~/.secrets on the host first
+      - ${HOME}/.secrets:/home/dev/.secrets:ro
+      # Mount SSH keys for GitHub access
+      - ${HOME}/.ssh:/home/dev/.ssh:ro
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    depends_on:
+      mysql:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.0
+    container_name: devenv-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dev
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres:
+    image: postgres:15
+    container_name: devenv-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  workspace:
+  mysql_data:
+  postgres_data:

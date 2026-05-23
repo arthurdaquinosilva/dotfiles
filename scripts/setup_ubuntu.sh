@@ -83,7 +83,8 @@ install_translate_shell() {
     log_info "Installing Translate Shell..."
     command_exists trans && { log_info "Translate Shell already installed"; return 0; }
 
-    curl -Lo /tmp/trans git.io/trans
+    curl -Lo /tmp/trans \
+        "https://raw.githubusercontent.com/soimort/translate-shell/develop/trans"
     chmod +x /tmp/trans
     sudo mv /tmp/trans /usr/local/bin/
     log_success "Translate Shell installed"
