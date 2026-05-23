@@ -357,11 +357,12 @@ alias aws=/usr/local/aws-cli/aws
 # 🔑 API KEYS & ENVIRONMENT VARIABLES
 # ============================================================================
 
-export GEMINI_API_KEY="AIzaSyADlXz_gxgIJZx-EJy2xnkY4p_jXU7b_XY"
-export ANTHROPIC_API_KEY="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"
 export OLLAMA_API_BASE="http://127.0.0.1:11434"
 export SRC_ENDPOINT=https://sourcegraph.com
-export SRC_ACCESS_TOKEN="sgp_fd1b4edb60bf82b8_3f67977b2d27bb76f4f4b80f5a91a0220680f2d7"
+
+# Secrets (API keys) are loaded from ~/.secrets — never committed to the repo.
+# See shell/secrets.example for the expected format.
+[[ -f "$HOME/.secrets" ]] && source "$HOME/.secrets"
 
 # ============================================================================
 # 🔧 ADDITIONAL INTEGRATIONS

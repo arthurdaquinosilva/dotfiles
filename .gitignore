@@ -1,2 +1,5 @@
-# Ignore local zshrc file containing secrets
+# Local overrides — never committed
 shell/macos/.zshrc.local
+
+# Secrets — copy shell/secrets.example to ~/.secrets and fill in values
+.secrets
