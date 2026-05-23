@@ -43,9 +43,9 @@ alias tt10='tree -L 10 -guphDA'
 alias '?'=duck
 alias '??'=google
 alias '???'=stack
-alias 'tp'=translatetopt
-alias 'te'=translatetoen
-alias 'tsp'=translatetoes
+alias 'tp'='translate :pt'
+alias 'te'='translate :en'
+alias 'tsp'='translate :es'
 alias tns='tmuxinator new'
 alias tst='tmuxinator start'
 tstp() {

@@ -319,9 +319,9 @@ alias '??'=google
 alias '???'=stack
 
 # Translation
-alias 'tp'=translatetopt
-alias 'te'=translatetoen
-alias 'tsp'=translatetoes
+alias 'tp'='translate :pt'
+alias 'te'='translate :en'
+alias 'tsp'='translate :es'
 
 # Tmuxinator
 alias tns='tmuxinator new'

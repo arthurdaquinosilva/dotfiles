@@ -1,9 +1,0 @@
-#!/bin/sh
-
-# Check for trans dependency
-if ! command -v trans >/dev/null 2>&1; then
-  echo "Error: 'trans' command not found. Please install translate-shell (e.g., 'brew install translate-shell')." >&2
-  exit 1
-fi
-
-trans :en "$*"

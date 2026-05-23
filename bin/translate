@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if ! command -v trans >/dev/null 2>&1; then
+  echo "Error: 'trans' not found. Install translate-shell (brew install translate-shell)." >&2
+  exit 1
+fi
+
+if [ $# -lt 2 ]; then
+  echo "Usage: translate :<lang> <text>" >&2
+  echo "  e.g. translate :en hello mundo" >&2
+  exit 1
+fi
+
+lang="$1"; shift
+trans "$lang" "$*"
