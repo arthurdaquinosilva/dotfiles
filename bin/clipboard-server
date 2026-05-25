@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+"""Serve macOS clipboard over TCP so a remote SSH client can read it.
+
+Usage (macOS):
+  clipboard-server &         # start in background
+  clipboard-server --daemon  # start as daemon (writes PID to /tmp/clipboard-server.pid)
+
+SSH config on the Mac (add to ~/.ssh/config for the Linux VM host):
+  RemoteForward 2489 127.0.0.1:2489
+
+On the Linux side, clip-paste connects to localhost:2489 which SSH tunnels back here.
+"""
+import socket
+import subprocess
+import sys
+import os
+
+PORT = 2489
+
+
+def serve():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    try:
+        server.bind(("127.0.0.1", PORT))
+    except OSError as e:
+        sys.exit("clipboard-server: bind failed on port {}: {}".format(PORT, e))
+    server.listen(5)
+    while True:
+        conn, _ = server.accept()
+        try:
+            data = subprocess.check_output(["pbpaste"])
+            conn.sendall(data)
+        except Exception:
+            pass
+        finally:
+            try:
+                conn.shutdown(socket.SHUT_RDWR)
+            except Exception:
+                pass
+            conn.close()
+
+
+if "--daemon" in sys.argv:
+    if os.fork() > 0:
+        sys.exit(0)
+    os.setsid()
+    if os.fork() > 0:
+        sys.exit(0)
+    with open("/tmp/clipboard-server.pid", "w") as f:
+        f.write(str(os.getpid()))
+
+serve()

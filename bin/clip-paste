@@ -1,6 +1,36 @@
 #!/usr/bin/env bash
 # Paste from the system clipboard to stdout (cross-platform, tmux-aware).
-# Priority: pbpaste → xclip (X11) → xsel (X11) → wl-paste (Wayland) → tmux buffer
+# Priority: pbpaste → xclip (X11) → xsel (X11) → wl-paste (Wayland) →
+#           clipboard-server port 2489 (SSH RemoteForward) →
+#           OSC52 read (iTerm2 / WezTerm / kitty) → tmux buffer
+
+# Request the clipboard from the host terminal via OSC52.
+# Uses dd + stty timeout to capture the raw response, handling both BEL (\007)
+# and ST (\e\) terminators that different terminals use.
+#
+# iTerm2  → Preferences › General › Selection › "Allow clipboard access"
+# WezTerm → enabled by default
+# kitty   → clipboard_control read-clipboard in kitty.conf
+_osc52_read() {
+    [ -e /dev/tty ] || return 1
+    local old_stty buf b64
+    old_stty=$(stty -g </dev/tty 2>/dev/null) || return 1
+    # min 0 time 3: return immediately if data available, otherwise wait 0.3s
+    stty raw -echo min 0 time 3 </dev/tty 2>/dev/null \
+        || { stty "$old_stty" </dev/tty 2>/dev/null; return 1; }
+    if [ -n "$TMUX" ]; then
+        printf '\ePtmux;\e\e]52;c;?\007\e\\' >/dev/tty
+    else
+        printf '\e]52;c;?\007' >/dev/tty
+    fi
+    buf=$(dd if=/dev/tty bs=4096 count=1 2>/dev/null)
+    stty "$old_stty" </dev/tty 2>/dev/null
+    # Extract base64 payload; strip BEL (\007) or ST (\e\) terminator
+    b64=$(printf '%s' "$buf" | sed 's/.*52;[^;]*;//; s/\x07.*//; s/\x1b\\.*//')
+    [ -z "$b64" ] && return 1
+    printf '%s' "$b64" | base64 -d 2>/dev/null
+}
+
 if command -v pbpaste &>/dev/null; then
     pbpaste
 elif command -v xclip &>/dev/null && [ -n "$DISPLAY" ]; then
@@ -9,6 +39,8 @@ elif command -v xsel &>/dev/null && [ -n "$DISPLAY" ]; then
     xsel --clipboard --output
 elif command -v wl-paste &>/dev/null && [ -n "$WAYLAND_DISPLAY" ]; then
     wl-paste --no-newline
-elif [ -n "$TMUX" ]; then
-    tmux show-buffer 2>/dev/null || true
+else
+    timeout 2 nc localhost 2489 2>/dev/null \
+        || _osc52_read 2>/dev/null \
+        || { [ -n "$TMUX" ] && tmux show-buffer 2>/dev/null || true; }
 fi
