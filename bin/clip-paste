@@ -40,7 +40,7 @@ elif command -v xsel &>/dev/null && [ -n "$DISPLAY" ]; then
 elif command -v wl-paste &>/dev/null && [ -n "$WAYLAND_DISPLAY" ]; then
     wl-paste --no-newline
 else
-    timeout 2 nc localhost 2489 2>/dev/null \
+    nc localhost 2489 </dev/null 2>/dev/null \
         || _osc52_read 2>/dev/null \
         || { [ -n "$TMUX" ] && tmux show-buffer 2>/dev/null || true; }
 fi
