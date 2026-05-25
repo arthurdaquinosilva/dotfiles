@@ -82,6 +82,7 @@ setup_symlinks() {
     }
 
     _link "$zshrc_source"                   "$HOME/.zshrc"
+    _link "bin"                             "$HOME/bin"
     _link "terminal/tmux/.tmux.conf"        "$HOME/.tmux.conf"
     _link "terminal/git/.gitconfig"         "$HOME/.gitconfig"
     _link "terminal/lazygit/config.yml"     "$HOME/.config/lazygit/config.yml"

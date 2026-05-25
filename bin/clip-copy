@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Copy stdin to the system clipboard (cross-platform, tmux-aware).
+# Priority: pbcopy → xclip (X11) → xsel (X11) → wl-copy (Wayland) → tmux buffer
+if command -v pbcopy &>/dev/null; then
+    pbcopy
+elif command -v xclip &>/dev/null && [ -n "$DISPLAY" ]; then
+    xclip -selection clipboard -in
+elif command -v xsel &>/dev/null && [ -n "$DISPLAY" ]; then
+    xsel --clipboard --input
+elif command -v wl-copy &>/dev/null && [ -n "$WAYLAND_DISPLAY" ]; then
+    wl-copy
+elif [ -n "$TMUX" ]; then
+    tmux load-buffer -
+fi

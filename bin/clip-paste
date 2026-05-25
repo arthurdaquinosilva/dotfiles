@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Paste from the system clipboard to stdout (cross-platform, tmux-aware).
+# Priority: pbpaste → xclip (X11) → xsel (X11) → wl-paste (Wayland) → tmux buffer
+if command -v pbpaste &>/dev/null; then
+    pbpaste
+elif command -v xclip &>/dev/null && [ -n "$DISPLAY" ]; then
+    xclip -selection clipboard -out
+elif command -v xsel &>/dev/null && [ -n "$DISPLAY" ]; then
+    xsel --clipboard --output
+elif command -v wl-paste &>/dev/null && [ -n "$WAYLAND_DISPLAY" ]; then
+    wl-paste --no-newline
+elif [ -n "$TMUX" ]; then
+    tmux show-buffer 2>/dev/null || true
+fi

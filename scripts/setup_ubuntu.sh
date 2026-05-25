@@ -23,7 +23,7 @@ install_apt_packages() {
         lsb-release software-properties-common unzip zip make \
         htop btop glances \
         ripgrep silversearcher-ag tree fzf zoxide bat \
-        tmux vim zsh \
+        tmux vim-gtk3 xclip zsh \
         libssl-dev libbz2-dev libreadline-dev libsqlite3-dev \
         libffi-dev liblzma-dev zlib1g-dev tk-dev \
         python3-pip python3-dev
