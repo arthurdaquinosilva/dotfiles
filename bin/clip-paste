@@ -40,7 +40,16 @@ elif command -v xsel &>/dev/null && [ -n "$DISPLAY" ]; then
 elif command -v wl-paste &>/dev/null && [ -n "$WAYLAND_DISPLAY" ]; then
     wl-paste --no-newline
 else
-    nc localhost 2489 </dev/null 2>/dev/null \
-        || _osc52_read 2>/dev/null \
-        || { [ -n "$TMUX" ] && tmux show-buffer 2>/dev/null || true; }
+    # With SSH RemoteForward the daemon listens on 2489 even when no clipboard
+    # server is running on the host — so nc exits 0 but returns the SSH error
+    # string "connect_to 127.0.0.1 port 2489: failed." as data.
+    # Capture and validate: discard the output if it looks like that error.
+    _nc_out=$(nc -w1 localhost 2489 </dev/null 2>/dev/null)
+    if [ $? -eq 0 ] && [ -n "$_nc_out" ] && \
+       ! printf '%s' "$_nc_out" | grep -qF 'connect_to'; then
+        printf '%s' "$_nc_out"
+    else
+        _osc52_read 2>/dev/null \
+            || { [ -n "$TMUX" ] && tmux show-buffer 2>/dev/null || true; }
+    fi
 fi
