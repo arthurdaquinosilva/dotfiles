@@ -114,6 +114,26 @@ configure_postgresql() {
     fi
 }
 
+install_clipboard_server() {
+    log_info "Installing clipboard server LaunchAgent..."
+
+    local python3_path
+    python3_path=$(command -v python3) \
+        || { log_warning "python3 not found — skipping clipboard server install"; return 0; }
+
+    local plist_src="$DOTFILES_DIR/launchagents/com.user.clipboard-server.plist"
+    local plist_dest="$HOME/Library/LaunchAgents/com.user.clipboard-server.plist"
+
+    mkdir -p "$HOME/Library/LaunchAgents"
+    sed -e "s|__PYTHON3__|$python3_path|g" \
+        -e "s|__SCRIPT__|$HOME/bin/clipboard-server|g" \
+        "$plist_src" > "$plist_dest"
+
+    launchctl unload "$plist_dest" 2>/dev/null || true
+    launchctl load "$plist_dest"
+    log_success "Clipboard server LaunchAgent installed and started"
+}
+
 # ============================================================================
 # MAIN
 # ============================================================================
@@ -137,6 +157,7 @@ main() {
     setup_claude_auth
     clone_vim_repository
     setup_symlinks "shell/macos/.zshrc"
+    install_clipboard_server
     install_oh_my_zsh
     setup_nvm_and_node "$BREW_PREFIX"
     setup_pyenv_and_python
