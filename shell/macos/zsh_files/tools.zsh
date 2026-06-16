@@ -106,7 +106,7 @@ if command -v fzf >/dev/null 2>&1; then
         --reverse
         --border=rounded
         --prompt='> '
-        --pointer='→'
+        --pointer='>'
         --marker='*'
         --tiebreak=index
         --color=bg:-1,bg+:-1,fg:#e8e8f0,fg+:#e8e8f0:bold
