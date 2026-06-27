@@ -11,8 +11,7 @@
 
 [delta]
 	syntax-theme = Monokai Extended
-	side-by-side = true
-	width = variable
+	side-by-side = false
 	line-numbers = true
 	minus-style = "#e8e8e8" "#3d0000"
 	minus-emph-style = "#e8e8e8" "#5c0a0a"
