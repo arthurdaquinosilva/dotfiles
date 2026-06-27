@@ -4,7 +4,7 @@ gui:
 git:
   paging:
     colorArg: always
-    pager: delta --paging=never
+    pager: git-split-diffs --color | less -RFX
 keybinding:
   universal:
     quit: "q"
