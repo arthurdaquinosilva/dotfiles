@@ -37,7 +37,7 @@ function _rw_precmd() {
     colored_left="%F{cyan}%B${dir}%b%f"
     [[ -n "$branch" ]] && colored_left+=" %F{red}${branch}%f"
 
-    print -P "${colored_left}$(printf '%*s' $pad '')%F{brightblack}${binary}%f"
+    print -P "${colored_left}$(printf '%*s' $pad '')%F{black}${binary}%f"
 }
 
 autoload -Uz add-zsh-hook
