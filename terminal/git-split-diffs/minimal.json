@@ -1,66 +1,22 @@
 {
-  "DEFAULT_COLOR": {
-    "color": "#e8e8f0"
-  },
-  "COMMIT_HEADER_COLOR": {
-    "color": "#e8e8f0"
-  },
-  "COMMIT_HEADER_LABEL_COLOR": {
-    "color": "#a89bc2"
-  },
-  "COMMIT_SHA_COLOR": {
-    "color": "#00e5ff"
-  },
-  "COMMIT_DATE_COLOR": {
-    "color": "#a89bc2"
-  },
-  "COMMIT_AUTHOR_COLOR": {
-    "color": "#cc6af4"
-  },
-  "COMMIT_MESSAGE_COLOR": {
-    "color": "#e8e8f0"
-  },
-  "COMMIT_TITLE_COLOR": {
-    "color": "#f4b46a"
-  },
-  "BORDER_COLOR": {
-    "color": "#6b5a8e"
-  },
-  "FILE_NAME_COLOR": {
-    "color": "#7b2fff"
-  },
-  "HUNK_HEADER_COLOR": {
-    "color": "#a89bc2"
-  },
-  "DELETED_WORD_COLOR": {
-    "backgroundColor": "#5c1030"
-  },
-  "INSERTED_WORD_COLOR": {
-    "backgroundColor": "#013040"
-  },
-  "DELETED_LINE_NO_COLOR": {
-    "color": "#e8607a",
-    "backgroundColor": "#2d0515"
-  },
-  "INSERTED_LINE_NO_COLOR": {
-    "color": "#00e5ff",
-    "backgroundColor": "#021520"
-  },
-  "UNMODIFIED_LINE_NO_COLOR": {
-    "color": "#6b5a8e"
-  },
-  "DELETED_LINE_COLOR": {
-    "color": "#e8607a",
-    "backgroundColor": "#2d0515"
-  },
-  "INSERTED_LINE_COLOR": {
-    "color": "#00e5ff",
-    "backgroundColor": "#021520"
-  },
-  "UNMODIFIED_LINE_COLOR": {
-    "color": "#e8e8f0"
-  },
-  "MISSING_LINE_COLOR": {
-    "color": "#a89bc2"
-  }
+  "DEFAULT_COLOR": {},
+  "COMMIT_HEADER_COLOR": {},
+  "COMMIT_HEADER_LABEL_COLOR": {},
+  "COMMIT_SHA_COLOR": {},
+  "COMMIT_DATE_COLOR": {},
+  "COMMIT_AUTHOR_COLOR": {},
+  "COMMIT_MESSAGE_COLOR": {},
+  "COMMIT_TITLE_COLOR": { "bold": true },
+  "BORDER_COLOR": {},
+  "FILE_NAME_COLOR": { "bold": true },
+  "HUNK_HEADER_COLOR": {},
+  "DELETED_WORD_COLOR": { "backgroundColor": "#3d0000" },
+  "INSERTED_WORD_COLOR": { "backgroundColor": "#003d00" },
+  "DELETED_LINE_NO_COLOR": { "color": "#cc0000" },
+  "INSERTED_LINE_NO_COLOR": { "color": "#009900" },
+  "UNMODIFIED_LINE_NO_COLOR": {},
+  "DELETED_LINE_COLOR": { "color": "#cc0000" },
+  "INSERTED_LINE_COLOR": { "color": "#009900" },
+  "UNMODIFIED_LINE_COLOR": {},
+  "MISSING_LINE_COLOR": {}
 }

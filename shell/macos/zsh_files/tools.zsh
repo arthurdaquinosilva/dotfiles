@@ -84,8 +84,7 @@ elif command -v fzf >/dev/null 2>&1; then
     eval "$(fzf --zsh)" 2>/dev/null || true
 fi 
 
-# Use default bat theme
-# export BAT_THEME="ansi"
+export BAT_THEME="ansi"
 
 # FZF configuration (only if FZF is available)
 if command -v fzf >/dev/null 2>&1; then
@@ -109,10 +108,7 @@ if command -v fzf >/dev/null 2>&1; then
         --pointer='>'
         --marker='*'
         --tiebreak=index
-        --color=bg:-1,bg+:-1,fg:#e8e8f0,fg+:#e8e8f0:bold
-        --color=hl:#e8607a:bold,hl+:#e8607a:bold
-        --color=border:#3d2fd4,info:#a89bc2,prompt:#00e5ff
-        --color=pointer:#cc6af4,marker:#f4b46a,spinner:#00e5ff,header:#6b5a8e
+        --color=default
     "
 
     # Simple file preview
