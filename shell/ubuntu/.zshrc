@@ -38,3 +38,6 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 export PATH="$HOME/.dotnet/tools:$PATH"
+
+# bun completions
+[ -s "/home/arthurdaquino/.bun/_bun" ] && source "/home/arthurdaquino/.bun/_bun"
