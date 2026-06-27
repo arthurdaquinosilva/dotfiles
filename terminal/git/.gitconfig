@@ -4,7 +4,25 @@
 
 [core]
 	editor = vim
-	pager = git-split-diffs --color | less -RFX
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	syntax-theme = Monokai Extended
+	side-by-side = true
+	line-numbers = true
+	minus-style = "#e8e8e8" "#3d0000"
+	minus-emph-style = "#e8e8e8" "#5c0a0a"
+	plus-style = syntax "#003d00"
+	plus-emph-style = syntax "#0a3d0a"
+	line-numbers-minus-style = "#e8e8e8" "#3d0000"
+	line-numbers-plus-style = syntax "#003d00"
+	line-numbers-zero-style = "#a89bc2"
+	hunk-header-style = omit
+	file-style = bold
+	file-decoration-style = none
 
 [color]
 	ui = auto
@@ -19,8 +37,6 @@
 [merge]
     conflictstyle = zdiff3
 
-[split-diffs]
-	theme-name = minimal
 
 [include]
 	path = ~/.gitconfig.local
