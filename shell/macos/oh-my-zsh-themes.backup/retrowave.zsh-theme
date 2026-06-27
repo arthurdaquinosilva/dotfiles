@@ -34,8 +34,8 @@ function _rw_precmd() {
     (( pad < 1 )) && pad=1
 
     # Colored version
-    colored_left="%F{109}%B${dir}%b%f"
-    [[ -n "$branch" ]] && colored_left+=" %F{131}${branch}%f"
+    colored_left="%F{cyan}%B${dir}%b%f"
+    [[ -n "$branch" ]] && colored_left+=" %F{red}${branch}%f"
 
     print -P "${colored_left}$(printf '%*s' $pad '')%F{238}${binary}%f"
 }
@@ -43,6 +43,6 @@ function _rw_precmd() {
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd _rw_precmd
 
-PROMPT='%F{137}>%f '
+PROMPT='%F{yellow}>%f '
 RPROMPT=''
-PROMPT2='%F{137}>%f '
+PROMPT2='%F{yellow}>%f '

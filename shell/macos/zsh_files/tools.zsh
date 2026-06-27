@@ -108,7 +108,7 @@ if command -v fzf >/dev/null 2>&1; then
         --pointer='>'
         --marker='*'
         --tiebreak=index
-        --color=bg+:-1,hl:137,hl+:137
+        --color=bg+:-1,hl:yellow,hl+:yellow
     "
 
     # Simple file preview
