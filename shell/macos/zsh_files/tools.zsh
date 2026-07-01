@@ -84,8 +84,6 @@ elif command -v fzf >/dev/null 2>&1; then
     eval "$(fzf --zsh)" 2>/dev/null || true
 fi 
 
-export BAT_THEME="ansi"
-
 # FZF configuration (only if FZF is available)
 if command -v fzf >/dev/null 2>&1; then
     # Use ag if available, otherwise find

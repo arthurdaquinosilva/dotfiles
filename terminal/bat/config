@@ -1,7 +1,7 @@
 # Minimal bat configuration using default colors
 
 # Syntax highlighting theme
---theme="retrowave"
+--theme="habamax"
 
 # Show line numbers and Git modifications
 --style="numbers,changes"
