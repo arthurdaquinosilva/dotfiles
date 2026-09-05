@@ -279,6 +279,16 @@ install_oh_my_zsh() {
     else
         log_info "zsh-autosuggestions already installed"
     fi
+
+    # Custom themes — symlinked so edits in the repo take effect immediately.
+    local theme_src="$DOTFILES_DIR/shell/macos/oh-my-zsh-themes.backup/retrowave.zsh-theme"
+    if [[ -f "$theme_src" ]]; then
+        mkdir -p "$zsh_custom/themes"
+        ln -sf "$theme_src" "$zsh_custom/themes/retrowave.zsh-theme"
+        log_success "retrowave theme installed"
+    else
+        log_warning "retrowave theme not found at $theme_src"
+    fi
 }
 
 # ============================================================================

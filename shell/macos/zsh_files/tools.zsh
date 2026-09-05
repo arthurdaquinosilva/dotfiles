@@ -12,7 +12,14 @@
 # Only load Oh My Zsh if it exists
 if [[ -d "$HOME/.oh-my-zsh" ]]; then
     export ZSH="$HOME/.oh-my-zsh"
-    ZSH_THEME="retrowave"
+
+    # Fall back to a built-in theme if the custom one was never installed
+    # (run scripts/setup_macos.sh to install it).
+    if [[ -f "${ZSH_CUSTOM:-$ZSH/custom}/themes/retrowave.zsh-theme" ]]; then
+        ZSH_THEME="retrowave"
+    else
+        ZSH_THEME="robbyrussell"
+    fi
 
     # Plugins (keep minimal for performance) - only load if they exist
     plugins=(git)
