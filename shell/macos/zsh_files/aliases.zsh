@@ -46,6 +46,9 @@ alias '???'=stack
 alias 'tp'='translate :pt'
 alias 'te'='translate :en'
 alias 'tsp'='translate :es'
+alias 'ite'='trans -shell -brief pt:en'
+alias 'itp'='trans -shell -brief en:pt'
+alias 'itesp'='trans -shell -brief pt:es'
 alias tns='tmuxinator new'
 alias tst='tmuxinator start'
 tstp() {
