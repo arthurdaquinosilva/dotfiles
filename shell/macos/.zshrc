@@ -45,6 +45,10 @@ unset ZSH_CONFIG_DIR
 export PATH="$HOME/.dotnet/tools:$PATH"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# fzf dir picker: Ctrl+S instead of Alt+C (Esc then c collided with vi-mode "change")
+bindkey -r '^[c'; bindkey -M vicmd -r '^[c'
+bindkey -M viins '^S' fzf-cd-widget
+bindkey -M vicmd '^S' fzf-cd-widget
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=(/Users/arthurdaquino/.docker/completions $fpath)
 autoload -Uz compinit
