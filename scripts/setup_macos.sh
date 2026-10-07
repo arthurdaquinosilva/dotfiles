@@ -139,6 +139,7 @@ install_clipboard_server() {
 # ============================================================================
 main() {
     log_info "Starting macOS (Apple Silicon) development environment setup..."
+    setup_headless_browser
 
     if ! command_exists brew; then
         install_homebrew
@@ -167,21 +168,7 @@ main() {
     configure_mysql
     configure_postgresql
 
-    log_success "========================================================"
-    log_success "Setup complete! Restart your terminal before continuing."
-    log_success "========================================================"
-    log_info ""
-    log_info "Verify your setup:"
-    log_info "  node --version && yarn --version   # Node via NVM"
-    log_info "  python --version                   # Python via pyenv"
-    log_info "  go version                         # Go"
-    log_info "  gh auth status                     # GitHub CLI"
-    log_info "  ssh -T git@github.com              # GitHub SSH"
-    log_info "  git-split-diffs --version          # git-split-diffs"
-    log_info "  claude --version                   # Claude Code"
-    log_info "  bat --version                      # bat"
-    log_info "  tmux                               # tmux"
-    log_info "  vim                                # Vim with plugins"
+    print_setup_complete
 }
 
 main "$@"

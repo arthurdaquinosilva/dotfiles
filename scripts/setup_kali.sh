@@ -1,9 +1,14 @@
 #!/bin/bash
 # ============================================================================
-# Ubuntu Development Environment Setup
+# Kali Linux Development Environment Setup
 # ============================================================================
-# Works on desktop and headless machines (VMs, SSH). In headless sessions
-# URLs are printed instead of opened — force with HEADLESS=1 or HEADLESS=0.
+# Designed for a Kali VM accessed over SSH (no browser): every login URL is
+# printed so you can open it on your host. Force with HEADLESS=1 or HEADLESS=0.
+#
+# Differences from Ubuntu:
+#   - gh comes from the Kali repos (no extra apt source needed)
+#   - MariaDB instead of MySQL (mysql-server does not exist on Kali)
+#   - full-upgrade, as recommended for Kali rolling
 # ============================================================================
 
 set -eo pipefail
@@ -14,20 +19,20 @@ source "$DOTFILES_DIR/scripts/lib/common.sh"
 source "$DOTFILES_DIR/scripts/lib/debian.sh"
 
 # ============================================================================
-# UBUNTU-SPECIFIC FUNCTIONS
+# KALI-SPECIFIC FUNCTIONS
 # ============================================================================
 
 install_apt_packages() {
     log_info "Installing apt packages..."
 
-    apt_upgrade upgrade
+    apt_upgrade full-upgrade
 
     apt_install \
         build-essential curl wget git ca-certificates gnupg \
-        lsb-release software-properties-common unzip zip make \
+        lsb-release unzip zip make \
         htop btop glances \
         ripgrep silversearcher-ag tree fzf zoxide bat \
-        tmux vim-gtk3 xclip zsh \
+        tmux vim-gtk3 xclip zsh gh \
         libssl-dev libbz2-dev libreadline-dev libsqlite3-dev \
         libffi-dev liblzma-dev zlib1g-dev tk-dev libncurses-dev xz-utils \
         python3-pip python3-dev
@@ -42,7 +47,7 @@ install_apt_packages() {
 # MAIN
 # ============================================================================
 main() {
-    log_info "Starting Ubuntu development environment setup..."
+    log_info "Starting Kali development environment setup..."
     setup_headless_browser
     wait_for_user
 

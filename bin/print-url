@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Stand-in "browser" for headless sessions (SSH, VMs without a desktop).
+# Used as $BROWSER so gh, claude, xdg-open, etc. print the URL instead of
+# launching a terminal browser like lynx/w3m. Open the URL on your host.
+for url in "$@"; do
+    printf '\n\033[1;33mOpen this URL in a browser on your host machine:\033[0m\n  %s\n\n' "$url" >&2
+    printf '%s' "$url" | "$(dirname "$0")/clip-copy" 2>/dev/null || true
+done
+exit 0

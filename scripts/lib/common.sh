@@ -10,7 +10,7 @@
 # CONFIGURABLE VERSIONS (override before sourcing if needed)
 # ============================================================================
 PYTHON_VERSION="${PYTHON_VERSION:-3.12.7}"
-GO_VERSION="${GO_VERSION:-1.22.2}"
+GO_VERSION="${GO_VERSION:-}"            # Linux only; empty = latest stable
 NVM_VERSION="${NVM_VERSION:-0.39.7}"
 VIM_REPO_URL="${VIM_REPO_URL:-https://github.com/arthurdaquinosilva/vim.git}"
 CLAUDE_INSTALL_URL="${CLAUDE_INSTALL_URL:-https://claude.ai/install.sh}"
@@ -33,6 +33,41 @@ log_error()   { echo -e "${RED}[ERROR]${NC} $1"; }
 # HELPERS
 # ============================================================================
 command_exists() { command -v "$1" >/dev/null 2>&1; }
+
+# True when there is no usable local browser: SSH sessions, or Linux without
+# a graphical display (e.g. a VM accessed over SSH). Override with HEADLESS=1/0.
+is_headless() {
+    case "${HEADLESS:-}" in
+        1|true|yes) return 0 ;;
+        0|false|no) return 1 ;;
+    esac
+    [[ -n "${SSH_CONNECTION:-}" || -n "${SSH_TTY:-}" ]] && return 0
+    [[ "$(uname)" == "Darwin" ]] && return 1
+    [[ -z "${DISPLAY:-}" && -z "${WAYLAND_DISPLAY:-}" ]]
+}
+
+# In headless sessions, make every tool that "opens a browser" (gh, claude,
+# xdg-open) print the URL instead of launching lynx/w3m in the terminal.
+setup_headless_browser() {
+    is_headless || return 0
+    export BROWSER="$DOTFILES_DIR/bin/print-url"
+    export GH_BROWSER="$BROWSER"
+    log_info "Headless session detected — URLs will be printed for you to open on your host."
+}
+
+# Usage: open_url <url>
+open_url() {
+    local url="$1"
+    if is_headless; then
+        "$DOTFILES_DIR/bin/print-url" "$url"
+    elif [[ "$(uname)" == "Darwin" ]]; then
+        open "$url"
+    elif command_exists xdg-open; then
+        xdg-open "$url" >/dev/null 2>&1 &
+    else
+        log_info "Open: $url"
+    fi
+}
 
 wait_for_user() {
     echo -e "${YELLOW}Press Enter to continue...${NC}"
@@ -156,18 +191,18 @@ setup_github_ssh() {
     echo -e "${GREEN}$(cat "$ssh_key.pub")${NC}"
     echo ""
 
-    if [[ "$(uname)" == "Darwin" ]]; then
+    if is_headless; then
+        open_url "https://github.com/settings/ssh/new"
+    else
         echo -e "${YELLOW}Open GitHub SSH settings in browser? (y/n):${NC}"
         read -r _open_browser
-        [[ "$_open_browser" =~ ^[Yy]$ ]] && open "https://github.com/settings/ssh/new"
-    else
-        log_info "Add the key at: https://github.com/settings/ssh/new"
+        [[ "$_open_browser" =~ ^[Yy]$ ]] && open_url "https://github.com/settings/ssh/new"
     fi
 
     echo -e "${YELLOW}Press Enter after adding the key to GitHub...${NC}"
     read -r
 
-    if ssh -T git@github.com -o StrictHostKeyChecking=no 2>&1 | grep -q "successfully authenticated"; then
+    if ssh -T git@github.com -o StrictHostKeyChecking=accept-new 2>&1 | grep -q "successfully authenticated"; then
         log_success "GitHub SSH connection successful!"
     else
         log_warning "SSH test failed — run later: ssh -T git@github.com"
@@ -187,10 +222,15 @@ setup_github_cli() {
         return 0
     fi
 
-    log_info "This will open GitHub in your browser for authentication."
+    if is_headless; then
+        log_info "gh will show a one-time code and print a URL."
+        log_info "Open the URL on your host machine and enter the code there."
+    else
+        log_info "This will open GitHub in your browser for authentication."
+    fi
     wait_for_user
 
-    gh auth login --git-protocol ssh --web
+    gh auth login --hostname github.com --git-protocol ssh --web
 
     if gh auth status >/dev/null 2>&1; then
         log_success "GitHub CLI authenticated"
@@ -396,9 +436,35 @@ setup_claude_auth() {
     fi
 
     log_info "Claude Code requires a one-time browser login."
-    log_info "Open a new terminal tab, run 'claude', and complete authentication in your browser."
+    if is_headless; then
+        log_info "Open a new SSH session, run 'claude' and choose a login method."
+        log_info "It prints a URL — open it on your host, then paste the code back into claude."
+    else
+        log_info "Open a new terminal tab, run 'claude', and complete authentication in your browser."
+    fi
     echo -e "${YELLOW}Press Enter once you have completed Claude authentication...${NC}"
     read -r
 
     log_success "Claude Code authentication step complete"
+}
+
+# ============================================================================
+# SUMMARY
+# ============================================================================
+print_setup_complete() {
+    log_success "========================================================"
+    log_success "Setup complete! Restart your terminal before continuing."
+    log_success "========================================================"
+    log_info ""
+    log_info "Verify your setup:"
+    log_info "  node --version && yarn --version   # Node via NVM"
+    log_info "  python --version                   # Python via pyenv"
+    log_info "  go version                         # Go"
+    log_info "  gh auth status                     # GitHub CLI"
+    log_info "  ssh -T git@github.com              # GitHub SSH"
+    log_info "  git-split-diffs --version          # git-split-diffs"
+    log_info "  claude --version                   # Claude Code"
+    log_info "  bat --version                      # bat"
+    log_info "  tmux                               # tmux"
+    log_info "  vim                                # Vim with plugins"
 }

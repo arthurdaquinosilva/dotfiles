@@ -24,3 +24,11 @@ export PATH="$PATH:$GOPATH/bin"
 if [[ -f "$HOME/.deno/env" ]]; then
     source "$HOME/.deno/env"
 fi
+
+# Headless sessions (SSH / VM without a desktop): print URLs instead of
+# opening lynx/w3m when tools like gh or claude try to launch a browser.
+if [[ -x "$HOME/bin/print-url" ]] && \
+   [[ -n "$SSH_CONNECTION" || ( -z "$DISPLAY" && -z "$WAYLAND_DISPLAY" ) ]]; then
+    export BROWSER="$HOME/bin/print-url"
+    export GH_BROWSER="$BROWSER"
+fi
