@@ -71,3 +71,4 @@ alias gptb="tgpt --provider blackboxai"
 alias gptp="tgpt --provider phind"
 alias gptd="tgpt --provider duckduckgo"
 alias aws=/usr/local/aws-cli/aws
+alias turnoff="osascript -e 'tell app \"System Events\" to shut down'"
