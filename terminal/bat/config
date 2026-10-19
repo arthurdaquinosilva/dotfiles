@@ -1,7 +1,7 @@
-# Minimal bat configuration using default colors
+# bat configuration
 
-# Syntax highlighting theme
---theme="habamax"
+# Syntax highlighting theme (terminal/bat/themes/pitch.tmTheme)
+--theme="pitch"
 
 # Show line numbers and Git modifications
 --style="numbers,changes"

@@ -91,11 +91,11 @@ WORKDIR /home/${USERNAME}
 COPY --chown=${USERNAME}:${USERNAME} . /home/${USERNAME}/dotfiles
 
 # ============================================================================
-# Oh My Zsh + retrowave theme + zsh-autosuggestions
+# Oh My Zsh + pitch theme + zsh-autosuggestions
 # ============================================================================
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
-    && cp ~/dotfiles/shell/macos/oh-my-zsh-themes.backup/retrowave.zsh-theme \
-        ~/.oh-my-zsh/custom/themes/retrowave.zsh-theme \
+    && cp ~/dotfiles/shell/macos/oh-my-zsh-themes.backup/pitch.zsh-theme \
+        ~/.oh-my-zsh/custom/themes/pitch.zsh-theme \
     && git clone https://github.com/zsh-users/zsh-autosuggestions \
         ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
 
@@ -159,6 +159,8 @@ RUN mkdir -p ~/.config/lazygit ~/.config/lazydocker \
     && ln -sf ~/dotfiles/terminal/git/.gitconfig ~/.gitconfig \
     && ln -sf ~/dotfiles/terminal/lazygit/config.yml ~/.config/lazygit/config.yml \
     && ln -sf ~/dotfiles/terminal/lazydocker/config.yml ~/.config/lazydocker/config.yml \
+    && ln -sfn ~/dotfiles/terminal/bat ~/.config/bat \
+    && bat cache --build \
     && ln -sf ~/.vim/.vimrc ~/.vimrc 2>/dev/null || true
 
 # ============================================================================

@@ -38,6 +38,6 @@ filter)
 	' "$file" >"$file.tmp" && mv "$file.tmp" "$file"
 	;;
 status)
-	is_kept "$2" && printf ' #[fg=colour71]saved#[default]'
+	is_kept "$2" && printf ' #[fg=#9ece6a]saved#[default]'
 	;;
 esac

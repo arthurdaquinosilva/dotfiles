@@ -122,6 +122,12 @@ setup_symlinks() {
     _link "terminal/git/.gitconfig"         "$HOME/.gitconfig"
     _link "terminal/lazygit/config.yml"     "$HOME/.config/lazygit/config.yml"
     _link "terminal/lazydocker/config.yml"  "$HOME/.config/lazydocker/config.yml"
+    _link "terminal/bat"                    "$HOME/.config/bat"
+
+    # bat only sees custom themes (terminal/bat/themes/pitch.tmTheme) once cached
+    if command_exists bat; then
+        bat cache --build >/dev/null && log_success "bat theme cache built"
+    fi
 
     if [[ -f "$HOME/.vim/.vimrc" ]]; then
         ln -sf "$HOME/.vim/.vimrc" "$HOME/.vimrc"
@@ -321,13 +327,13 @@ install_oh_my_zsh() {
     fi
 
     # Custom themes — symlinked so edits in the repo take effect immediately.
-    local theme_src="$DOTFILES_DIR/shell/macos/oh-my-zsh-themes.backup/retrowave.zsh-theme"
+    local theme_src="$DOTFILES_DIR/shell/macos/oh-my-zsh-themes.backup/pitch.zsh-theme"
     if [[ -f "$theme_src" ]]; then
         mkdir -p "$zsh_custom/themes"
-        ln -sf "$theme_src" "$zsh_custom/themes/retrowave.zsh-theme"
-        log_success "retrowave theme installed"
+        ln -sf "$theme_src" "$zsh_custom/themes/pitch.zsh-theme"
+        log_success "pitch theme installed"
     else
-        log_warning "retrowave theme not found at $theme_src"
+        log_warning "pitch theme not found at $theme_src"
     fi
 }
 

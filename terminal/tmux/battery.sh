@@ -30,9 +30,9 @@ esac
 [ -n "$percent" ] || exit 0
 
 if [ "$state" = "charging" ]; then
-  color="colour71"
+  color="#9ece6a"
 elif [ "$percent" -le 20 ]; then
-  color="colour131"
+  color="#f7768e"
 else
   color="default"
 fi

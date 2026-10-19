@@ -1,6 +1,40 @@
 gui:
+  # pitch palette (terminal/colors/pitch.md)
   theme:
     lightTheme: false
+    activeBorderColor:
+      - '#7aa2f7'
+      - bold
+    inactiveBorderColor:
+      - '#2a2e42'
+    searchingActiveBorderColor:
+      - '#e0af68'
+      - bold
+    optionsTextColor:
+      - '#565f89'
+    selectedLineBgColor:
+      - bold
+    inactiveViewSelectedLineBgColor:
+      - default
+    cherryPickedCommitFgColor:
+      - '#7dcfff'
+    cherryPickedCommitBgColor:
+      - '#232738'
+    markedBaseCommitFgColor:
+      - '#e0af68'
+    markedBaseCommitBgColor:
+      - '#232738'
+    unstagedChangesColor:
+      - '#f7768e'
+    defaultFgColor:
+      - '#c0caf5'
+    authorColors:
+      '*': '#bb9af7'
+    branchColorPatterns:
+      '^(main|master)$': '#7aa2f7'
+      '^(feature|feat)/': '#9ece6a'
+      '^(fix|bugfix|hotfix)/': '#f7768e'
+      '.*': '#73daca'
 git:
   diffRenderers:
     - colorArg: always

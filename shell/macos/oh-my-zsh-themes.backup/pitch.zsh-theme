@@ -1,7 +1,6 @@
-# Retrowave Oh My Zsh Theme
-# Version: 4.4
+# pitch Oh My Zsh theme (palette: terminal/colors/pitch.md)
 
-function _rw_user_binary_raw() {
+function _pitch_user_binary_raw() {
     local result="" char val b i
     for char in ${(s::)USER}; do
         val=$(printf '%d' "'$char")
@@ -14,7 +13,7 @@ function _rw_user_binary_raw() {
     echo "${result% }"
 }
 
-function _rw_precmd() {
+function _pitch_precmd() {
     local dir branch binary left_plain colored_left pad
 
     if [[ "$PWD" == "$HOME" ]]; then
@@ -24,7 +23,7 @@ function _rw_precmd() {
     fi
 
     branch=$(git symbolic-ref --short HEAD 2>/dev/null)
-    binary=$(_rw_user_binary_raw)
+    binary=$(_pitch_user_binary_raw)
 
     # Plain text for width calculation
     left_plain="${dir}"
@@ -34,15 +33,15 @@ function _rw_precmd() {
     (( pad < 1 )) && pad=1
 
     # Colored version
-    colored_left="%F{109}%B${dir}%b%f"
-    [[ -n "$branch" ]] && colored_left+=" %F{131}${branch}%f"
+    colored_left="%F{#7aa2f7}%B${dir}%b%f"
+    [[ -n "$branch" ]] && colored_left+=" %F{#bb9af7}${branch}%f"
 
-    print -P "${colored_left}$(printf '%*s' $pad '')%F{238}${binary}%f"
+    print -P "${colored_left}$(printf '%*s' $pad '')%F{#3b4261}${binary}%f"
 }
 
 autoload -Uz add-zsh-hook
-add-zsh-hook precmd _rw_precmd
+add-zsh-hook precmd _pitch_precmd
 
-PROMPT='%F{137}>%f '
+PROMPT='%F{#7dcfff}>%f '
 RPROMPT=''
-PROMPT2='%F{137}>%f '
+PROMPT2='%F{#7dcfff}>%f '

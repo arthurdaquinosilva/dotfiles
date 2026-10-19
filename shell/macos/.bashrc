@@ -1,7 +1,7 @@
 # ============================================================================
-# TOKYO NIGHT BASH CONFIGURATION (macOS)
+# BASH CONFIGURATION (macOS)
 # ============================================================================
-# A beautiful, well-organized bash configuration with Tokyo Night theming
+# A well-organized bash configuration using the pitch palette (terminal/colors/pitch.md)
 # Converted from zsh configuration for compatibility
 
 # ============================================================================
@@ -65,20 +65,17 @@ export CPPFLAGS="-I/opt/homebrew/opt/mysql@8.0/include"
 export PKG_CONFIG_PATH="/opt/homebrew/opt/mysql@8.0/lib/pkgconfig"
 
 # ============================================================================
-# 🔍 FZF SETTINGS - TOKYO NIGHT THEME
+# 🔍 FZF SETTINGS
 # ============================================================================
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 eval "$(fzf --bash)" 
 
-# Tokyo Night theme for bat
-export BAT_THEME="TokyoNight"
-
-# FZF configuration with Tokyo Night colors
+# FZF configuration
 export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
 export FZF_CTRL_T_COMMAND='ag --hidden --ignore .git -g ""'
 
-# Tokyo Night color scheme for fzf
+# fzf colors: pitch palette (same as zsh_files/tools.zsh)
 export FZF_DEFAULT_OPTS="
     --extended
     --height=90%
@@ -88,17 +85,16 @@ export FZF_DEFAULT_OPTS="
     --prompt='🔍 '
     --pointer='▶ '
     --marker='✓ '
-    --color=fg:#c0caf5,bg:-1,hl:#bb9af7
-    --color=fg+:#c0caf5,bg+:-1,hl+:#7dcfff
-    --color=info:#7aa2f7,prompt:#bb9af7,pointer:#f7768e
-    --color=marker:#9ece6a,spinner:#f7768e,header:#9ece6a
-    --color=border:#414868
+    --color=fg:#a9b1d6,bg:-1,hl:#7aa2f7,fg+:#c0caf5:bold,bg+:-1,hl+:#7dcfff
+    --color=info:#565f89,prompt:#7dcfff,pointer:#bb9af7,marker:#9ece6a,spinner:#bb9af7
+    --color=header:#565f89,border:#2a2e42,label:#7aa2f7,query:#c0caf5,gutter:-1
+    --color=separator:#2a2e42,scrollbar:#2a2e42,preview-border:#2a2e42
     --tiebreak=index
 "
 
-# Enhanced preview with bat Tokyo Night theme
+# Enhanced preview with bat
 export FZF_CTRL_T_OPTS="
-    --preview 'bat --theme=TokyoNight --style=numbers --color=always {} 2>/dev/null || tree -C {} | head -200'
+    --preview 'bat --style=numbers --color=always {} 2>/dev/null || tree -C {} | head -200'
     --preview-window=right:60%:wrap
     --prompt='📁 '
     --header='📂 Select File'
@@ -286,9 +282,9 @@ alias tt=select_directories
 # Pretty ls
 alias pls='pretty-ls.py'
 
-# Bat - Tokyo Night
-alias bat="bat --theme=TokyoNight --style=numbers,changes,header"
-alias preview="fzf --reverse --preview 'bat --theme=TokyoNight --style=numbers,changes,header --color always {} 2>/dev/null || tree -C {} | head -200'"
+# Bat
+alias bat="bat --style=numbers,changes,header"
+alias preview="fzf --reverse --preview 'bat --style=numbers,changes,header --color always {} 2>/dev/null || tree -C {} | head -200'"
 
 # Tree
 alias t1='tree -L 1 -a'
@@ -375,27 +371,23 @@ source /Users/arthurdaquino/.config/broot/launcher/bash/br
 . "/Users/arthurdaquino/.deno/env"
 
 # ============================================================================
-# 🎨 BASH-SPECIFIC ENHANCEMENTS & TOKYO NIGHT PROMPT
+# 🎨 BASH-SPECIFIC ENHANCEMENTS & PROMPT
 # ============================================================================
 
-# Tokyo Night Prompt with Git Integration
+# Prompt with Git Integration
 parse_git_branch() {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
-# Tokyo Night Colors
-TOKYO_PURPLE='\[\033[38;5;177m\]'
-TOKYO_BLUE='\[\033[38;5;75m\]'
-TOKYO_GREEN='\[\033[38;5;158m\]'
-TOKYO_YELLOW='\[\033[38;5;221m\]'
-TOKYO_RED='\[\033[38;5;203m\]'
-TOKYO_CYAN='\[\033[38;5;117m\]'
-TOKYO_GRAY='\[\033[38;5;59m\]'
-TOKYO_WHITE='\[\033[38;5;250m\]'
+# pitch palette (terminal/colors/pitch.md)
+PITCH_BLUE='\[\033[38;2;122;162;247m\]'
+PITCH_CYAN='\[\033[38;2;125;207;255m\]'
+PITCH_MAGENTA='\[\033[38;2;187;154;247m\]'
+PITCH_GUTTER='\[\033[38;2;59;66;97m\]'
 RESET='\[\033[0m\]'
 
-# Beautiful Tokyo Night Prompt
-PS1="${TOKYO_PURPLE}❯${RESET} ${TOKYO_BLUE}\u${RESET}${TOKYO_GRAY}@${RESET}${TOKYO_CYAN}\h${RESET} ${TOKYO_YELLOW}\w${RESET} ${TOKYO_GREEN}\$(parse_git_branch)${RESET}\n${TOKYO_PURPLE}❯${RESET} "
+# Same colors as the zsh prompt: directory, branch, then a `>` line
+PS1="${PITCH_BLUE}\w${RESET} ${PITCH_MAGENTA}\$(parse_git_branch)${RESET}${PITCH_GUTTER} \u@\h${RESET}\n${PITCH_CYAN}>${RESET} "
 
 # History settings
 export HISTSIZE=10000
@@ -428,5 +420,5 @@ if type brew &>/dev/null; then
 fi
 
 # ============================================================================
-# 🌃 END OF TOKYO NIGHT BASH CONFIGURATION
+# END OF BASH CONFIGURATION
 # ============================================================================

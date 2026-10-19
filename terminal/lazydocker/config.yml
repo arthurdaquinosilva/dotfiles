@@ -1,16 +1,15 @@
 gui:
+  # pitch palette (terminal/colors/pitch.md)
   theme:
     activeBorderColor:
-      - '#cc6af4'
+      - '#7aa2f7'
       - bold
     inactiveBorderColor:
-      - '#6b5a8e'
+      - '#2a2e42'
     optionsTextColor:
-      - '#7b2fff'
+      - '#565f89'
     selectedLineBgColor:
-      - '#1e0f4a'
-    selectedRangeBgColor:
-      - '#1e0f4a'
+      - bold
 
 # Log settings
 logs:

@@ -15,8 +15,8 @@ if [[ -d "$HOME/.oh-my-zsh" ]]; then
 
     # Fall back to a built-in theme if the custom one was never installed
     # (run scripts/setup_macos.sh to install it).
-    if [[ -f "${ZSH_CUSTOM:-$ZSH/custom}/themes/retrowave.zsh-theme" ]]; then
-        ZSH_THEME="retrowave"
+    if [[ -f "${ZSH_CUSTOM:-$ZSH/custom}/themes/pitch.zsh-theme" ]]; then
+        ZSH_THEME="pitch"
     else
         ZSH_THEME="robbyrussell"
     fi
@@ -102,7 +102,8 @@ if command -v fzf >/dev/null 2>&1; then
         export FZF_CTRL_T_COMMAND='find . -type f 2>/dev/null'
     fi
 
-    # Minimal fzf configuration with custom colors
+    # Minimal fzf configuration — pitch palette (terminal/colors/pitch.md).
+    # fzf.vim inherits these colors too.
     export FZF_DEFAULT_OPTS="
         --extended
         --height=90%
@@ -113,7 +114,10 @@ if command -v fzf >/dev/null 2>&1; then
         --pointer='>'
         --marker='*'
         --tiebreak=index
-        --color=bg+:-1,hl:137,hl+:137
+        --color=fg:#a9b1d6,bg:-1,hl:#7aa2f7,fg+:#c0caf5:bold,bg+:-1,hl+:#7dcfff
+        --color=info:#565f89,prompt:#7dcfff,pointer:#bb9af7,marker:#9ece6a,spinner:#bb9af7
+        --color=header:#565f89,border:#2a2e42,label:#7aa2f7,query:#c0caf5,gutter:-1
+        --color=separator:#2a2e42,scrollbar:#2a2e42,preview-border:#2a2e42
     "
 
     # Simple file preview

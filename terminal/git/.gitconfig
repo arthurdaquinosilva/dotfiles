@@ -13,6 +13,43 @@
 	status = auto
 	log = auto
 
+# pitch palette (terminal/colors/pitch.md)
+[color "diff"]
+	meta = "#7aa2f7" bold
+	frag = "#bb9af7"
+	func = "#565f89"
+	old = "#f7768e"
+	new = "#9ece6a"
+	context = "#a9b1d6"
+	whitespace = "#f7768e" reverse
+	commit = "#e0af68"
+
+[color "status"]
+	header = "#565f89"
+	branch = "#bb9af7" bold
+	added = "#9ece6a"
+	changed = "#e0af68"
+	untracked = "#f7768e"
+	unmerged = "#ff9e64" bold
+
+[color "branch"]
+	current = "#7aa2f7" bold
+	local = "#a9b1d6"
+	remote = "#73daca"
+	upstream = "#73daca"
+
+[color "decorate"]
+	HEAD = "#7aa2f7" bold
+	branch = "#9ece6a"
+	remoteBranch = "#73daca"
+	tag = "#e0af68"
+	stash = "#bb9af7"
+
+[color "grep"]
+	filename = "#bb9af7"
+	linenumber = "#3b4261"
+	match = "#ff9e64" bold
+
 [init]
 	defaultBranch = main
 
@@ -20,7 +57,7 @@
     conflictstyle = zdiff3
 
 [split-diffs]
-	theme-name = minimal
+	theme-name = pitch
 
 [include]
 	path = ~/.gitconfig.local
