@@ -3,13 +3,12 @@
 One palette for the whole terminal: cool blue/violet hues on the terminal's own
 pitch-black (`#000000`) background. Backgrounds stay transparent
 (`default` / `NONE` / `-1`), including selected rows in lists and menus (shown
-bold/bright instead); only the focused tmux pane, Visual selections, search
-matches and diffs paint a surface.
+bold/bright instead); only Visual selections, search matches and diffs paint a
+surface.
 
 | Name      | Hex       | 256 | Role                                         |
 |-----------|-----------|-----|----------------------------------------------|
 | bg        | `#000000` | —   | terminal background (never painted)          |
-| bg_pane   | `#08090e` | 232 | focused tmux pane (barely lifted)            |
 | bg1       | `#0b0d14` | 233 | faint surface (color column, scrollbar)      |
 | bg2       | `#161925` | 234 | Visual selection, copy-mode selection        |
 | bg3       | `#232738` | 235 | search match, word under cursor              |
