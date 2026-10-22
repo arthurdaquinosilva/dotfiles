@@ -45,4 +45,4 @@ surface.
 | lazydocker      | `terminal/lazydocker/config.yml`                       |
 | zsh prompt      | `shell/macos/oh-my-zsh-themes.backup/pitch.zsh-theme`  |
 | bash prompt     | `shell/macos/.bashrc`                                  |
-| CLI tools       | `theme.py` / `theme.js` in ember, shtick, cinder, flare and lore (`~/projects`); each tool has its own accent: ember orange, cinder red, flare yellow, lore green, shtick cyan |
+| CLI tools       | `theme.py` / `theme.js` / `theme.ts` in ember, shtick, cinder, flare, lore and querky (`~/projects`); each tool has its own accent: ember orange, cinder red, flare yellow, lore green, shtick cyan, querky teal |
