@@ -15,6 +15,7 @@ surface.
 | border    | `#2a2e42` | 237 | borders, separators, inactive panes          |
 | gutter    | `#3b4261` | 239 | line numbers, very dim text                  |
 | comment   | `#565f89` | 60  | comments, secondary/muted text               |
+| muted     | `#737aa2` | 103 | status text in the CLI tools                 |
 | fg_dim    | `#a9b1d6` | 146 | regular list text                            |
 | fg        | `#c0caf5` | 153 | main text                                    |
 | blue      | `#7aa2f7` | 111 | primary accent: focus, active border, funcs  |
@@ -44,3 +45,4 @@ surface.
 | lazydocker      | `terminal/lazydocker/config.yml`                       |
 | zsh prompt      | `shell/macos/oh-my-zsh-themes.backup/pitch.zsh-theme`  |
 | bash prompt     | `shell/macos/.bashrc`                                  |
+| CLI tools       | `theme.py` / `theme.js` in ember, shtick, cinder, flare and lore (`~/projects`); each tool has its own accent: ember orange, cinder red, flare yellow, lore green, shtick cyan |
