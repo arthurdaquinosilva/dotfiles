@@ -117,6 +117,28 @@ install_translate_shell() {
     log_success "Translate Shell installed"
 }
 
+# Builds tmux from the latest release: apt lags behind the options .tmux.conf uses
+install_tmux() {
+    log_info "Installing tmux..."
+
+    local version tmp
+    version=$(curl -fsSL "https://api.github.com/repos/tmux/tmux/releases/latest" \
+        | grep -Po '"tag_name": *"\K[^"]*')
+    if [[ "$(/usr/local/bin/tmux -V 2>/dev/null)" == "tmux $version" ]]; then
+        log_info "tmux $version already installed"
+        return 0
+    fi
+
+    apt_install libevent-dev libncurses-dev libutf8proc-dev pkg-config bison
+    tmp=$(mktemp -d)
+    curl -fsSL "https://github.com/tmux/tmux/releases/download/${version}/tmux-${version}.tar.gz" \
+        | tar xz -C "$tmp" --strip-components=1
+    (cd "$tmp" && ./configure --enable-utf8proc && make -j"$(nproc)")
+    sudo make -C "$tmp" install
+    rm -rf "$tmp"
+    log_success "tmux $version installed"
+}
+
 install_go() {
     if [[ -x /usr/local/go/bin/go ]] || command_exists go; then
         export PATH="$PATH:/usr/local/go/bin"

@@ -27,7 +27,7 @@ install_apt_packages() {
         lsb-release software-properties-common unzip zip make \
         htop btop glances \
         ripgrep silversearcher-ag tree fzf zoxide bat \
-        tmux vim-gtk3 xclip zsh \
+        vim-gtk3 xclip zsh \
         libssl-dev libbz2-dev libreadline-dev libsqlite3-dev \
         libffi-dev liblzma-dev zlib1g-dev tk-dev libncurses-dev xz-utils \
         python3-pip python3-dev
@@ -52,6 +52,7 @@ main() {
     install_lazygit
     install_lazydocker
     install_translate_shell
+    install_tmux
     install_claude
     install_go
     install_pyenv
