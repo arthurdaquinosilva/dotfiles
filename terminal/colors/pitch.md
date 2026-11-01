@@ -36,7 +36,7 @@ surface.
 | Tool            | File                                                   |
 |-----------------|--------------------------------------------------------|
 | Vim             | `~/.vim/colors/pitch.vim` (separate repo)              |
-| tmux            | `terminal/tmux/.tmux.conf`, `battery.sh`, `resurrect-sessions.sh`, `resurrect-restore.sh` |
+| tmux            | `terminal/tmux/.tmux.conf`, `battery.sh` |
 | fzf             | `shell/macos/zsh_files/tools.zsh` (`FZF_DEFAULT_OPTS`) |
 | bat             | `terminal/bat/themes/pitch.tmTheme`                    |
 | git             | `terminal/git/.gitconfig` (`[color "…"]`)              |
