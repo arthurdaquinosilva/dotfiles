@@ -49,7 +49,7 @@ install_homebrew_packages() {
 
     brew install mactop asitop htop btop glances
     brew install ripgrep the_silver_searcher tree fzf zoxide bat
-    brew install tmux lazygit lazydocker
+    brew install tmux tmuxinator lazygit lazydocker
     brew install gh translate-shell git-split-diffs
     brew install nvm pyenv go vim
     command_exists make || brew install make

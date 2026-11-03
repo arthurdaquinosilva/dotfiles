@@ -104,16 +104,13 @@ install_lazydocker() {
     log_success "Lazydocker installed"
 }
 
+# Uses apt: it pulls in gawk, which trans needs, and upstream no longer serves
+# the script from its develop branch
 install_translate_shell() {
     log_info "Installing Translate Shell..."
     command_exists trans && { log_info "Translate Shell already installed"; return 0; }
 
-    local tmp
-    tmp=$(mktemp -d)
-    curl -fsSLo "$tmp/trans" \
-        "https://raw.githubusercontent.com/soimort/translate-shell/develop/trans"
-    sudo install -m 755 "$tmp/trans" /usr/local/bin/trans
-    rm -rf "$tmp"
+    apt_install translate-shell
     log_success "Translate Shell installed"
 }
 
@@ -137,6 +134,21 @@ install_tmux() {
     sudo make -C "$tmp" install
     rm -rf "$tmp"
     log_success "tmux $version installed"
+}
+
+# Uses the gem: apt's tmuxinator lags behind and depends on apt's tmux
+install_tmuxinator() {
+    log_info "Installing tmuxinator..."
+
+    if command_exists tmuxinator || [[ -x "$HOME/.local/bin/tmuxinator" ]]; then
+        log_info "tmuxinator already installed"
+        return 0
+    fi
+
+    command_exists gem || apt_install ruby
+    mkdir -p "$HOME/.local/bin"
+    gem install --user-install --no-document --bindir "$HOME/.local/bin" tmuxinator
+    log_success "tmuxinator installed"
 }
 
 install_go() {
