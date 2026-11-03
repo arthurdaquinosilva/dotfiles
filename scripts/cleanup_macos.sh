@@ -23,7 +23,7 @@ cleanup_homebrew_packages() {
     local packages=(
         mactop asitop htop btop glances
         ripgrep the_silver_searcher tree fzf zoxide bat
-        tmux lazygit lazydocker
+        tmux tmuxinator lazygit lazydocker
         gh translate-shell git-split-diffs
         nvm pyenv go make vim
         mysql postgresql@15
@@ -49,6 +49,7 @@ cleanup_symlinks() {
         "$HOME/.vimrc"
         "$HOME/.config/lazygit/config.yml"
         "$HOME/.config/lazydocker/config.yml"
+        "$HOME/.config/tmuxinator"
     )
 
     for tgt in "${symlink_targets[@]}"; do

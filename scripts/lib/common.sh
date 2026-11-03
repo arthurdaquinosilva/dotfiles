@@ -123,6 +123,7 @@ setup_symlinks() {
     _link "terminal/lazygit/config.yml"     "$HOME/.config/lazygit/config.yml"
     _link "terminal/lazydocker/config.yml"  "$HOME/.config/lazydocker/config.yml"
     _link "terminal/bat"                    "$HOME/.config/bat"
+    _link "terminal/tmuxinator"             "$HOME/.config/tmuxinator"
 
     # bat only sees custom themes (terminal/bat/themes/pitch.tmTheme) once cached
     if command_exists bat; then
@@ -472,5 +473,6 @@ print_setup_complete() {
     log_info "  claude --version                   # Claude Code"
     log_info "  bat --version                      # bat"
     log_info "  tmux                               # tmux"
+    log_info "  tmuxinator doctor                  # tmuxinator"
     log_info "  vim                                # Vim with plugins"
 }

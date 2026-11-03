@@ -57,6 +57,7 @@ main() {
     install_lazygit
     install_lazydocker
     install_translate_shell
+    install_tmuxinator
     install_claude
     install_go
     install_pyenv
