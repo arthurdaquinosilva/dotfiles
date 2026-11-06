@@ -49,6 +49,12 @@ export PATH="$HOME/.dotnet/tools:$PATH"
 bindkey -r '^[c'; bindkey -M vicmd -r '^[c'
 bindkey -M viins '^S' fzf-cd-widget
 bindkey -M vicmd '^S' fzf-cd-widget
+# Browser bookmarks/history picker (dotfiles/bin/fb): Ctrl+O (inside tmux also prefix + b)
+fb-widget() { fb </dev/tty; zle reset-prompt; }
+zle -N fb-widget
+bindkey -M emacs '^O' fb-widget
+bindkey -M viins '^O' fb-widget
+bindkey -M vicmd '^O' fb-widget
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=(/Users/arthurdaquino/.docker/completions $fpath)
 autoload -Uz compinit

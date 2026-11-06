@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# fb — fuzzy-search Chrome bookmarks + history with fzf and open the selection.
+#   Tab = multi-select, Enter = open, Ctrl-Y = copy URL, ? = toggle preview
+# Look & feel comes from FZF_DEFAULT_OPTS (pitch palette, shell/macos/zsh_files/tools.zsh).
+set -euo pipefail
+
+CHROME="$HOME/Library/Application Support/Google/Chrome"
+HISTORY_LIMIT="${FB_HISTORY_LIMIT:-10000}"
+TMP="$(mktemp -d)"
+trap 'rm -rf "$TMP"' EXIT
+
+# pitch palette (terminal/colors/pitch.md)
+MAGENTA=$'\e[38;2;187;154;247m'  # bookmarks
+GUTTER=$'\e[38;2;59;66;97m'      # history marker
+COMMENT=$'\e[38;2;86;95;137m'    # URL (secondary text)
+RESET=$'\e[0m'
+
+profiles=()
+for p in "$CHROME"/Default "$CHROME"/Profile\ *; do
+  [[ -d "$p" ]] && profiles+=("$p")
+done
+
+list_entries() {
+  local i=0
+  for p in "${profiles[@]}"; do
+    # Bookmarks (JSON)
+    [[ -f "$p/Bookmarks" ]] || continue
+    /usr/bin/python3 - "$p/Bookmarks" <<'PY'
+import json, sys
+clean = lambda s: " ".join((s or "").split())
+def walk(n, path):
+    if n.get("type") == "url":
+        print(f"B\t{clean(n.get('name')) or n['url']}\t{n['url']}\t{path}")
+    for c in n.get("children", []):
+        walk(c, f"{path}/{clean(c.get('name'))}" if c.get("type") == "folder" else path)
+for root in json.load(open(sys.argv[1]))["roots"].values():
+    if isinstance(root, dict):
+        walk(root, clean(root.get("name")))
+PY
+  done
+  for p in "${profiles[@]}"; do
+    # History (SQLite) — Chrome locks the DB while running, so query a copy
+    [[ -f "$p/History" ]] || continue
+    i=$((i + 1))
+    cp "$p/History" "$TMP/h$i"
+    sqlite3 -separator $'\t' "$TMP/h$i" "
+      SELECT 'H',
+             COALESCE(NULLIF(replace(replace(title, char(9), ' '), char(10), ' '), ''), url),
+             url,
+             datetime(last_visit_time / 1000000 - 11644473600, 'unixepoch', 'localtime')
+      FROM urls
+      WHERE url NOT LIKE 'chrome%' AND hidden = 0
+      ORDER BY last_visit_time DESC
+      LIMIT $HISTORY_LIMIT;" 2>/dev/null || true
+  done
+}
+
+# Fields: 1 = colored marker + title, 2 = colored URL, 3 = raw URL, 4 = folder / last visit
+format() {
+  awk -F'\t' -v OFS='\t' -v m="$MAGENTA" -v g="$GUTTER" -v c="$COMMENT" -v r="$RESET" '
+    !seen[$3]++ {
+      mark = ($1 == "B") ? m "★" r : g "·" r
+      print mark " " $2, c $3 r, $3, $4
+    }'
+}
+
+selected="$(
+  list_entries | format |
+    fzf --ansi --multi --delimiter=$'\t' --with-nth=1,2 \
+        --prompt='Browser> ' \
+        --header='Bookmarks & History · Tab select · Ctrl-Y copy' \
+        --preview='printf "%s\n%s" {3} {4}' \
+        --preview-window=down:3:wrap \
+        --bind='?:toggle-preview' \
+        --bind='ctrl-y:execute-silent(printf %s {3} | pbcopy)+abort' |
+    cut -f3
+)" || exit 0
+
+while IFS= read -r url; do
+  [[ -n "$url" ]] && open "$url"
+done <<< "$selected"
