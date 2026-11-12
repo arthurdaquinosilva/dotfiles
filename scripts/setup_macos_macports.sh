@@ -50,10 +50,26 @@ install_macports_packages() {
     sudo port -N install ripgrep the_silver_searcher tree fzf zoxide bat
     sudo port -N install tmux lazygit lazydocker
     sudo port -N install git gh translate-shell
-    sudo port -N install go vim gmake
+    sudo port -N install go vim gmake ruby33
     # Build dependencies for pyenv's Python
     sudo port -N install openssl3 readline xz zlib libffi
     log_success "MacPorts packages installed"
+}
+
+# ============================================================================
+# TMUXINATOR (no port — install the gem with MacPorts' Ruby; system Ruby is too old)
+# ============================================================================
+
+install_tmuxinator() {
+    log_info "Installing tmuxinator..."
+
+    if command_exists tmuxinator || [[ -x "$HOME/.local/bin/tmuxinator" ]]; then
+        log_info "tmuxinator already installed"
+        return
+    fi
+
+    /opt/local/bin/gem3.3 install --user-install --no-document --bindir "$HOME/.local/bin" tmuxinator
+    log_success "tmuxinator installed"
 }
 
 # ============================================================================
@@ -124,6 +140,7 @@ main() {
     install_oh_my_zsh
     setup_nvm_and_node          # no brew prefix → nvm installed via its curl script
     install_pyenv
+    install_tmuxinator
     setup_tmux_plugins
     setup_vim_plugins "$PORT_PREFIX/bin/vim"
 
