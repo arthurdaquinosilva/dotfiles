@@ -61,6 +61,7 @@ tstp() {
 }
 alias ts='tmuxinator-fzf-start.sh'
 alias tmux='tmux -u'
+alias tl='tmux set -p @pane_label'
 alias goto='xdg-open'
 if [[ -f "/opt/homebrew/bin/vim" ]]; then
     alias vim='/opt/homebrew/bin/vim'
