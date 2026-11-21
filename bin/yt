@@ -1,0 +1,5 @@
+#!/bin/bash
+
+query=$(echo "$*" | tr ' ' '+')
+
+open "https://www.youtube.com/results?search_query=$query"
